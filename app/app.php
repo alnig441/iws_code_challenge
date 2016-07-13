@@ -18,6 +18,30 @@ $app->get('/', function() use($app){
 
 $app->post('/', function($url='login') use($app){
     
+    
+    $tickets = array(
+        "success" => true,
+        "error" => false,
+        "items" => array(
+            0 => array(
+                "client" => "Acme",
+                "itemId" => 1022,
+                "summary" => "API Integration",
+                "date" => "some date", 
+                "billable" => "yes",
+                "hours" => 10
+            ),
+            1 => array(
+                "client" => "AceCo",
+                "itemId" => 1092,
+                "summary" => "Microsite frontend",
+                "date" => "some date", 
+                "billable" => "yes",
+                "hours" => 10
+            )
+        ) 
+    );
+    
     $url = TS_URL.$url;
     
     if(!empty($_POST['username']) && !empty($_POST['password'])){
@@ -76,8 +100,11 @@ $app->post('/', function($url='login') use($app){
 //                return $app['twig']->render('viewTickets.twig');
 //            }
             
+            
+//            echo "print from array: ".($tickets[0]['client'])."<br/>";
+            
 //            COMMENT OUT FOLLOWING RETURN STATEMENT WHEN ASSIGNED TICKET API IS WORKING
-            return $app['twig']->render('viewTickets.twig');
+            return $app['twig']->render('viewTickets.twig', $tickets);
         }
 
     }

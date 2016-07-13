@@ -1,11 +1,10 @@
-hello from viewTickets 
 
 <center>
     <h1>Week of ?? </h1>
-    <table border="1">
+    <table>
         <thead>
             <tr>
-                <th>Date</th>
+                <th>Date <input type="date"/></th>
                 <th>Hours</th>
                 <th>Ticket</th>
                 <th>Comments</th>
@@ -15,37 +14,21 @@ hello from viewTickets
         </thead>
         <tbody>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                {% for tickets in items %}
+                <td>{{tickets.date}}</td>
+                <td>{{tickets.hours}}</td>
+                <td>{{tickets.client}} : {{tickets.itemId}}</td>
+                <td>{{tickets.summary}}</td>
+                <td>{{tickets.billable}}</td>
+                <td><input type="submit" value="Edit" /><input type="submit" value="Delete" /></td>
+                {% endfor %}
             </tr>
         </tbody>
-    </table>
-    <table border="1">
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
+    </table><br/>
+    <table>
         <tbody>
             <tr>
-                <td></td>
+                <td>Date <input type="date"/></td>
                 <td></td>
                 <td></td>
                 <td></td>

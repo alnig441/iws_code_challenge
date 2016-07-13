@@ -8,7 +8,12 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">
         <title></title>
-        <link href="styles.css" rel="stylesheet">
+        <style>
+            html {font-family: "Courier New", sans-serif, monospace;}
+            table {border: 1px; text-justify: distribute;}
+            thead, th {font-weight: normal; border: 1px solid;}
+
+        </style>   
     </head>
     <body>
         <?php
