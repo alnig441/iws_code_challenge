@@ -53,27 +53,31 @@ $app->post('/', function($url='login') use($app){
             $_SESSION['username'] = $_POST['username'];
             $_SESSION['userId'] = $result['userId'];
             
-            echo 'session: '.json_encode($_SESSION).'<br/>';
+//            CODE TO RETRIEVE ASSIGNED TICEKTS.
             
-            $options1 = array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => TS_URL.'assigneditems/tickets/'.$_COOKIE['userId']
-            );
+//            echo 'session: '.json_encode($_SESSION).'<br/>';
+//            
+//            $options1 = array(
+//                CURLOPT_RETURNTRANSFER => 1,
+//                CURLOPT_URL => TS_URL.'assigneditems/tickets/'.$_COOKIE['userId']
+//            );
+//            
+//            $ch1 = curl_init();
+//            curl_setopt_array($ch1, $options1);
+//            
+//            $result1 = curl_exec($ch1);
+//            
+//            echo 'get result: '.($result1);
+//            
+//            if(!$result1['success']){
+//                return 'something went wrong';
+//            }
+//            else{
+//                return $app['twig']->render('viewTickets.twig');
+//            }
             
-            $ch1 = curl_init();
-            curl_setopt_array($ch1, $options1);
-            
-            $result1 = curl_exec($ch1);
-            
-            echo 'get result: '.($result1);
-            
-            if(!$result1['success']){
-                return 'something went wrong';
-            }
-            else{
-                return $app['twig']->render('viewTickets.twig');
-            }
-            
+//            COMMENT OUT FOLLOWING RETURN STATEMENT WHEN ASSIGNED TICKET API IS WORKING
+            return $app['twig']->render('viewTickets.twig');
         }
 
     }

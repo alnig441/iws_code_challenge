@@ -8,3 +8,6 @@ and open the template in the editor.
     Author     : allannielsen
 */
 
+body {
+    font-family: "Courier New", Courier, monospace;
+}
