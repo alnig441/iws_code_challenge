@@ -5,7 +5,9 @@
         <group>
             <file>file:/Applications/MAMP/htdocs/iws_code_challenge/views/viewTickets.twig</file>
             <file>file:/Applications/MAMP/htdocs/iws_code_challenge/web/index.php</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/.htaccess</file>
             <file>file:/Applications/MAMP/htdocs/iws_code_challenge/app/app.php</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/views/editTicket.twig</file>
         </group>
     </open-files>
 </project-private>

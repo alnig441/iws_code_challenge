@@ -16,8 +16,14 @@ $app->get('/', function() use($app){
 
 });
 
-$app->post('/', function($url='login') use($app){
+$app->post('/edit/{itemId}', function() use($app){
     
+    echo 'get one:'.json_encode($_POST).'<br/>';
+    
+    return $app['twig']->render('editTicket.twig');
+});
+
+$app->post('/', function($url='login') use($app){
     
     $tickets = array(
         "success" => true,
@@ -115,6 +121,27 @@ $app->post('/', function($url='login') use($app){
     
 });
 
+
+$app->post('/addTicket', function() use($app){
+   
+    echo 'adding ticket'.json_encode($_POST).'<br/>';
+    
+    return $app['twig']->render('viewTickets.twig', $tickets);
+});
+
+$app->post('/edit/update', function() use($app){
+   
+    echo 'editing ticket'.json_encode($_POST).'<br/>';
+    
+    return $app['twig']->render('viewTickets.twig', $tickets);
+    
+});
+
+$app->post('/edit/delete', function() use($app){
+   
+    echo 'deleting ticket<br/>';
+    
+});
 
 return $app;
 

@@ -1,31 +1,35 @@
 
 <center>
     <h1>Week of ?? </h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Date <input type="date"/></th>
-                <th>Hours</th>
-                <th>Ticket</th>
-                <th id='comments'>Comments</th>
-                <th>Billable</th>
-                <th>Commands</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ticket in items %}
-            <tr>
-                <td>{{ticket.date}}</td>
-                <td>{{ticket.hours}}</td>
-                <td id="itemId" value="itemId">{{ticket.client}}: {{ticket.itemId}}</td>
-                <td id="td_comments">{{ticket.summary}}</td>
-                <td><input type="checkbox" checked={{ticket.billable}}></td>
-                <td><input type="submit" value="Edit" /><input type="submit" value="Delete" /></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table><br/>
-    <form>
+{#    <form name='editTicketForm' method="post" action="edit/itemId">#}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date <input type="date"/></th>
+                    <th>Hours</th>
+                    <th>Ticket</th>
+                    <th id='comments'>Comments</th>
+                    <th>Billable</th>
+                    <th>Commands</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in items %}
+                <form method="post" action="edit/itemId">
+                    <tr>
+                        <td>{{ticket.date}}</td>
+                        <td>{{ticket.hours}}</td>
+                        <td id='{{ticket.itemId}}}'>{{ticket.client}}: <input type="text" name="itemId" value='{{_context.ticket.itemId}}'></td>
+                        <td id="td_comments">{{ticket.summary}}</td>
+                        <td><input type="checkbox" checked={{ticket.billable}}></td>
+                        <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
+                    </tr>
+                </form>
+                {% endfor %}
+            </tbody>
+        </table><br/>
+{#    </form>#}
+    <form method='POST' action='addTicket'>
         <table>
             <tbody>
                 <tr>

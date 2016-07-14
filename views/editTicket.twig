@@ -1,1 +1,27 @@
-{# empty Twig template #}
+<center>
+    <form name="editTicket" method="POST" action='update'>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Hours</th>
+                    <th>Ticket</th>
+                    <th>Comments</th>
+                    <th>Billable</th>
+                    <th>Commands</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td><input type="text" name="hours" value=></td>
+                    <td></td>
+                    <td><input type="textarea" name="comments" vaulue=''></td>
+                    <td><input type='checkbox' name='billable'></td>
+                    <td><input type="submit" value="save" name="saveEdit"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </form>
+</center>
