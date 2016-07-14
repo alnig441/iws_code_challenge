@@ -28,7 +28,7 @@ $app->post('/', function($url='login') use($app){
                 "itemId" => 1022,
                 "summary" => "API Integration",
                 "date" => "some date", 
-                "billable" => "yes",
+                "billable" => henry,
                 "hours" => 10
             ),
             1 => array(
@@ -36,7 +36,7 @@ $app->post('/', function($url='login') use($app){
                 "itemId" => 1092,
                 "summary" => "Microsite frontend",
                 "date" => "some date", 
-                "billable" => "yes",
+                "billable" => true,
                 "hours" => 10
             )
         ) 

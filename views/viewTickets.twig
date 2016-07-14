@@ -7,36 +7,38 @@
                 <th>Date <input type="date"/></th>
                 <th>Hours</th>
                 <th>Ticket</th>
-                <th>Comments</th>
+                <th id='comments'>Comments</th>
                 <th>Billable</th>
                 <th>Commands</th>
             </tr>
         </thead>
         <tbody>
+            {% for ticket in items %}
             <tr>
-                {% for tickets in items %}
-                <td>{{tickets.date}}</td>
-                <td>{{tickets.hours}}</td>
-                <td>{{tickets.client}} : {{tickets.itemId}}</td>
-                <td>{{tickets.summary}}</td>
-                <td>{{tickets.billable}}</td>
+                <td>{{ticket.date}}</td>
+                <td>{{ticket.hours}}</td>
+                <td id="itemId" value="itemId">{{ticket.client}}: {{ticket.itemId}}</td>
+                <td id="td_comments">{{ticket.summary}}</td>
+                <td><input type="checkbox" checked={{ticket.billable}}></td>
                 <td><input type="submit" value="Edit" /><input type="submit" value="Delete" /></td>
-                {% endfor %}
             </tr>
+            {% endfor %}
         </tbody>
     </table><br/>
-    <table>
-        <tbody>
-            <tr>
-                <td>Date <input type="date"/></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><input type="submit" value="Add" /></td>
-            </tr>
-        </tbody>
-    </table>
+    <form>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Date <input type="date" name="date"/></td>
+                    <td><input type="text" name="hours"/></td>
+                    <td><input type="text" name="client"/></td>
+                    <td><input type="text" name="summary"/></td>
+                    <td><input type="checkbox" name="billable" /></td>
+                    <td><input type="submit" value="Add" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 
     
 </center>

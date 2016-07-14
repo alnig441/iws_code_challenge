@@ -10,9 +10,11 @@ and open the template in the editor.
         <title></title>
         <style>
             html {font-family: "Courier New", sans-serif, monospace;}
-            table {border: 1px; text-justify: distribute;}
+            table {border: 1px; width: 75%; text-justify: distribute;}
             thead, th {font-weight: normal; border: 1px solid;}
-
+            #comments {width: 50%;}
+            #td_comments {text-align: left;}
+            td {text-align: center;}
         </style>   
     </head>
     <body>
