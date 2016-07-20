@@ -55,43 +55,62 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
 
         $data = curl_exec($curl);
 
-        $split = preg_split('|vegur|', $data);
-        $user = json_decode($split[1], true);
-        
-        echo 'user obj: ' . json_encode($user) . '<br/>';
-
-        $_SESSION['userId'] = $user['userId'];
-
+        $split = preg_split('|{|', $data);
+        $user = json_decode('{'.$split[1], true);
+      
         curl_close($curl);
-
-
-        $getItemsUrl = TS_URL.$getItemsUrl.$_SESSION['userId'];
-
-        preg_match_all('|Set-Cookie: (.*);|U', $data, $matches);   
-        $cookies = implode('; ', $matches[1]);
-
-        $curl = curl_init();
-
-        $getTicketsOptions = array(
-
-            CURLOPT_URL => $getItemsUrl,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_HEADER => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_COOKIE => $cookies,
-        );
-
-        curl_setopt_array($curl, $getTicketsOptions);
-
-        $data = curl_exec($curl);
         
-        $split = preg_split('|vegur|', $data);
-        $tickets = json_decode($split[1], true);
+        if(!$user["success"]){
+            
+            return $app['twig']->render('login.twig').'wrong user/pw combo';
         
         }
         
-        return $app['twig']->render('viewTickets.twig', $tickets);
-    
+        else {
+  
+            $_SESSION['userId'] = $user['userId'];
+
+            $getItemsUrl = TS_URL.$getItemsUrl.$_SESSION['userId'];
+
+            preg_match_all('|Set-Cookie: (.*);|U', $data, $matches);   
+            $cookies = implode('; ', $matches[1]);
+
+            $curl = curl_init();
+
+            $getTicketsOptions = array(
+
+                CURLOPT_URL => $getItemsUrl,
+                CURLOPT_FOLLOWLOCATION => false,
+                CURLOPT_HEADER => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_COOKIE => $cookies,
+            );
+
+            curl_setopt_array($curl, $getTicketsOptions);
+
+            $data = curl_exec($curl);
+            
+            $split  = preg_split('|{|', $data);
+            $ticketStr = '';
+            
+            
+            foreach($split as $key=> $value){
+                echo 'key: '. $key . ' value: '. $value . '<br/>';
+                if($key != 0){
+                    echo 'that is it! <br/>';
+                    $ticketStr = $ticketStr.'{'.$value;
+                }
+            }
+            
+//            echo ' tickets ' . $newTicks . '<br/>';
+            
+            $tickets = json_decode($ticketStr, true);
+            
+            curl_close($curl);
+            
+            return $app['twig']->render('viewTickets.twig', $tickets);
+        }
+    }
 });
 
 
