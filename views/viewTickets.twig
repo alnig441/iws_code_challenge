@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for ticket in items %}
+{#                {% for ticket in items %}#}
                 <form method="post" action="edit/itemId" name="manageTicek">
                     <tr>
                         <td></td>
@@ -25,7 +25,7 @@
                         <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
                     </tr>
                 </form>
-                {% endfor %}
+{#                {% endfor %}#}
             </tbody>
         </table><br/>
 {#    </form>#}
@@ -43,11 +43,11 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Date <input type="date" name="date"/></td>
+                    <td><input type="date" name="date"/></td>
                     <td><input type="text" name="hours"/></td>
                     <td><select name="ticket">
                             {% for ticket in items %}
-                                <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.summary}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.summary}}")? "selected":"";?>>{{ticket.client}}: {{ticket.itemId}} {{ticket.summary}}</option>
+                                <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
                         </select</td>
                     <td><input type="text" name="summary"/></td>

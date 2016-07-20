@@ -23,101 +23,74 @@ $app->post('/edit/{itemId}', function() use($app){
     return $app['twig']->render('editTicket.twig');
 });
 
-$app->post('/', function($url='login') use($app){
+$app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tickets/') use($app){
     
-    $tickets = array(
-        "success" => true,
-        "error" => false,
-        "items" => array(
-            0 => array(
-                "client" => "Acme",
-                "itemId" => 1022,
-                "summary" => "API Integration",
-                "date" => "some date", 
-                "billable" => henry,
-                "hours" => 10
-            ),
-            1 => array(
-                "client" => "AceCo",
-                "itemId" => 1092,
-                "summary" => "Microsite frontend",
-                "date" => "some date", 
-                "billable" => true,
-                "hours" => 10
-            )
-        ) 
-    );
+    $login = TS_URL.$login;
     
-    $url = TS_URL.$url;
-    
-    if(!empty($_POST['username']) && !empty($_POST['password'])){
+    if(empty($_POST['username']) && !empty($_POST['password'])){
         
-        session_start();
+        return $app['twig']->render('login.twig');
         
-        $cookieJar =  tempnam("/tmp", "TestProjectCookie");
-        
-        $options = array(
-          
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $url,
-            CURLOPT_POST => 1,
-            CURLOPT_POSTFIELDS => http_build_query($_POST),
-            CURLOPT_COOKIEJAR => $cookieJar
-        );
-        
-        $ch = curl_init();
-        curl_setopt_array($ch, $options);
-        
-        if(!$result = curl_exec($ch)){
-             die('Error: "'.curl_error($ch). '" Code: "'.curl_errno($ch));
-        }
-        
-        curl_close($ch);
-        
-        $result = json_decode($result, true);
-        
-        if(!$result['success']){
-            return $app['twig']->render('login.twig');
-        }
-        else{
-            $_SESSION['username'] = $_POST['username'];
-            $_SESSION['userId'] = $result['userId'];
-            
-//            CODE TO RETRIEVE ASSIGNED TICEKTS.
-            
-//            echo 'session: '.json_encode($_SESSION).'<br/>';
-//            
-//            $options1 = array(
-//                CURLOPT_RETURNTRANSFER => 1,
-//                CURLOPT_URL => TS_URL.'assigneditems/tickets/'.$_COOKIE['userId']
-//            );
-//            
-//            $ch1 = curl_init();
-//            curl_setopt_array($ch1, $options1);
-//            
-//            $result1 = curl_exec($ch1);
-//            
-//            echo 'get result: '.($result1);
-//            
-//            if(!$result1['success']){
-//                return 'something went wrong';
-//            }
-//            else{
-//                return $app['twig']->render('viewTickets.twig');
-//            }
-            
-            
-//            echo "print from array: ".($tickets[0]['client'])."<br/>";
-            
-//            COMMENT OUT FOLLOWING RETURN STATEMENT WHEN ASSIGNED TICKET API IS WORKING
-            return $app['twig']->render('viewTickets.twig', $tickets);
-        }
-
     }
     
     else{
-            return $app['twig']->render('login.twig');
-    }
+        
+        session_start();
+    
+        $loginUrl = TS_URL.$loginUrl;
+
+        $curl = curl_init();
+
+        $postOptions = array(
+
+            CURLOPT_URL => $loginUrl,
+            CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($_POST),
+        );
+
+        curl_setopt_array($curl, $postOptions);
+
+        $data = curl_exec($curl);
+
+        $split = preg_split('|vegur|', $data);
+        $user = json_decode($split[1], true);
+        
+        echo 'user obj: ' . json_encode($user) . '<br/>';
+
+        $_SESSION['userId'] = $user['userId'];
+
+        curl_close($curl);
+
+
+        $getItemsUrl = TS_URL.$getItemsUrl.$_SESSION['userId'];
+
+        preg_match_all('|Set-Cookie: (.*);|U', $data, $matches);   
+        $cookies = implode('; ', $matches[1]);
+
+        $curl = curl_init();
+
+        $getTicketsOptions = array(
+
+            CURLOPT_URL => $getItemsUrl,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_COOKIE => $cookies,
+        );
+
+        curl_setopt_array($curl, $getTicketsOptions);
+
+        $data = curl_exec($curl);
+        
+        $split = preg_split('|vegur|', $data);
+        $tickets = json_decode($split[1], true);
+        
+        }
+        
+        return $app['twig']->render('viewTickets.twig', $tickets);
     
 });
 
