@@ -4,12 +4,6 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<?php
-////    session_name('timesheets');
-//    session_start();
-//    $_SESSION['color'] = 'green';
-//    $_SESSION['userId'] = '';
-?>
 
 <html>
     <head>

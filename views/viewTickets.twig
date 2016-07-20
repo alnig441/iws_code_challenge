@@ -14,18 +14,18 @@
                 </tr>
             </thead>
             <tbody>
-{#                {% for ticket in items %}#}
+                {% for timesheet in timesheets %}
                 <form method="post" action="edit/itemId" name="manageTicek">
                     <tr>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td id="td_comments"></td>
+                        <td>{{timesheet.hours}}</td>
+                        <td>{{timesheet.title}}</td>
+                        <td id="td_comments">{{timesheet.comments}}</td>
                         <td><input type="checkbox"></td>
                         <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
                     </tr>
                 </form>
-{#                {% endfor %}#}
+                {% endfor %}
             </tbody>
         </table><br/>
 {#    </form>#}
@@ -47,7 +47,7 @@
                     <td><input type="date" name="date"/></td>
                     <td><input type="text" name="hours"/></td>
                     <td><select name="ticket">
-                            {% for ticket in items %}
+                            {% for ticket in tickets.items %}
                                 <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
                         </select</td>
