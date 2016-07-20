@@ -1,5 +1,8 @@
 <?php
 
+session_id('TimesheetSession');
+session_start();
+
 define(TS_URL, "https://radiant-cove-60089.herokuapp.com/api/v1/");
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -35,8 +38,6 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
     
     else{
         
-        session_start();
-    
         $loginUrl = TS_URL.$loginUrl;
 
         $curl = curl_init();
@@ -67,8 +68,10 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
         }
         
         else {
-  
-            $_SESSION['userId'] = $user['userId'];
+            
+            if(!isset($_SESSION['userId'])){
+                $_SESSION['userId'] = $user['userId'];
+            }
 
             $getItemsUrl = TS_URL.$getItemsUrl.$_SESSION['userId'];
 
@@ -92,17 +95,12 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
             
             $split  = preg_split('|{|', $data);
             $ticketStr = '';
-            
-            
-            foreach($split as $key=> $value){
-                echo 'key: '. $key . ' value: '. $value . '<br/>';
+
+            foreach($split as $key => $value){
                 if($key != 0){
-                    echo 'that is it! <br/>';
                     $ticketStr = $ticketStr.'{'.$value;
                 }
             }
-            
-//            echo ' tickets ' . $newTicks . '<br/>';
             
             $tickets = json_decode($ticketStr, true);
             
@@ -115,6 +113,9 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
 
 
 $app->post('/addTicket', function() use($app){
+
+    
+    $_POST['userId'] = $_SESSION['userId'];
    
     echo 'adding ticket'.json_encode($_POST).'<br/>';
     

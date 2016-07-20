@@ -29,6 +29,7 @@
             </tbody>
         </table><br/>
 {#    </form>#}
+    <p> Add Timesheet </p>
     <form method='POST' action='addTicket'>
         <table>
             <thead>
@@ -50,7 +51,7 @@
                                 <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
                         </select</td>
-                    <td><input type="text" name="summary"/></td>
+                    <td id='td_comments'><input type="textarea" name="summary"/></td>
                     <td><input type="checkbox" name="billable" /></td>
                     <td><input type="submit" value="Add" /></td>
                 </tr>
