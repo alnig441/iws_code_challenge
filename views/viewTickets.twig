@@ -27,7 +27,7 @@
                         <td>{{timesheet.hours}}</td>
                         <td>{{timesheet.ticket}}</td>
                         <td id="td_comments">{{timesheet.comments}}</td>
-                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox" value="true"></td>
                         <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
                     </tr>
                 </form>
@@ -50,15 +50,15 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="date" name="date"/></td>
+                    <td><input type="date" name="created"/></td>
                     <td><input type="text" name="hours"/></td>
                     <td><select name="ticket">
                             {% for ticket in tickets.items %}
                                 <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
                         </select</td>
-                    <td id='td_comments'><input type="textarea" name="summary"/></td>
-                    <td><input type="checkbox" name="billable" value="yes"/></td>
+                    <td id='td_comments'><input type="textarea" name="comments"/></td>
+                    <td><input type="checkbox" name="billable"/></td>
                     <td><input type="submit" value="Add" /></td>
                 </tr>
             </tbody>

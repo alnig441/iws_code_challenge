@@ -147,6 +147,7 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
                 'timesheets' => $timesheets,
              );
             
+            mysqli_close($con);
             mysqli_free_result($timesheets);
             
             return $app['twig']->render('viewTickets.twig', $buildView);
@@ -162,6 +163,25 @@ $app->post('/addTicket', function() use($app){
     $_POST['userId'] = $_SESSION['userId'];
    
     echo 'adding ticket'.json_encode($_POST).'<br/>';
+    
+    $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+            if(!$con){
+                exit('Connect Error (' . mysqli_connect_errno() . ')'
+                        . mysqli_connect_error() );
+            }
+    mysqli_set_charset($con, 'utf-8');
+    
+    echo 'type: ' . gettype($_POST['created']) . '<br/>';
+    
+    $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" .$_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
+    
+    $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
+            
+    $iwsResult = mysqli_query($con, $dbQuery);
+    
+    echo 'db query: ' . $dbQuery . '<br/>';
+    
+    echo 'posted?? ' . json_encode($iwsResult) . '<br/>';
     
     return $app['twig']->render('viewTickets.twig', $tickets);
 });
