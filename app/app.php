@@ -1,6 +1,6 @@
 <?php
 
-session_id('TimesheetSession');
+session_id('iwscc');
 session_start();
 
 define(TS_URL, "https://radiant-cove-60089.herokuapp.com/api/v1/");
@@ -15,6 +15,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app->get('/', function() use($app){
     
+    session_unset();
+    
     return $app['twig']->render('login.twig');
 
 });
@@ -27,6 +29,8 @@ $app->post('/edit/{itemId}', function() use($app){
 });
 
 $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tickets/') use($app){
+    
+    session_start();
     
     $login = TS_URL.$login;
     
@@ -68,11 +72,13 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
         }
         
         else {
-            
+//            
             if(!isset($_SESSION['userId'])){
+                
                 $_SESSION['userId'] = $user['userId'];
+                
             }
-
+            
             $getItemsUrl = TS_URL.$getItemsUrl.$_SESSION['userId'];
 
             preg_match_all('|Set-Cookie: (.*);|U', $data, $matches);   
@@ -106,24 +112,44 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
             
             curl_close($curl);
             
-//            HARDCODED ARRAY FOR TESTING PURPOSES - REPLACE WITH GET CALL TO TIMESHEET DB
-            
-            $timesheets = array(
-                0 => array(
-                    'hours' => 3,
-                    'title' => 'blahdiblah',
-                    'comments' => 'whatever',
-                )
-            );
-            
 //            BUILD ARRAY TO SEND TO TWIG TEMPLATE (EXISTING TIMESHEETS FROM TIMESHEET DB + ASSIGNED ITEMS FROM TICKET DB
             
-            $view = array(
+            $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+            if(!$con){
+                exit('Connect Error (' . mysqli_connect_errno() . ')'
+                        . mysqli_connect_error() );
+            }
+            mysqli_set_charset($con, 'utf-8');
+
+            $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ."";
+            
+            $iwsResult = mysqli_query($con, $dbQuery);
+            
+            if(mysqli_num_rows($iwsResult) < 1){
+
+                $timesheets = array(
+                    0 => array(
+                        'created' => null,
+                        'hours' => null,
+                        'ticket' => null,
+                        'comments' => null,
+                        'billable' => null
+                    )
+                );
+            }
+            
+            else {
+                $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
+            }
+
+            $buildView = array(
                 'tickets' => $tickets,
                 'timesheets' => $timesheets,
              );
             
-            return $app['twig']->render('viewTickets.twig', $view);
+            mysqli_free_result($timesheets);
+            
+            return $app['twig']->render('viewTickets.twig', $buildView);
         }
     }
 });
@@ -131,17 +157,8 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
 
 $app->post('/addTicket', function() use($app){
     
-    $con = mysqli_connect("localhost", "phpuser", "phpuserpw");
-    
-    if(!$con){
-        exit('Connect error: (' . mysqli_connect_errno() . ') '
-                . mysqli_connect_error() );
-    }
-    
-    mysqli_set_charset($con, 'utf-8');
-    
-    mysqli_select_db($con, 'timesheets');
-    
+    session_start();
+
     $_POST['userId'] = $_SESSION['userId'];
    
     echo 'adding ticket'.json_encode($_POST).'<br/>';

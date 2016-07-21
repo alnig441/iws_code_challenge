@@ -16,6 +16,8 @@ and open the template in the editor.
             #comments {width: 50%;}
             #td_comments {text-align: left;}
             td {text-align: center;}
+            #logout {display: inline; position: absolute; right: 25%;}
+            #datepicker {display: inline; position: absolute; left: 25%;}
         </style>   
     </head>
     <body>
