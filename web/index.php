@@ -11,11 +11,10 @@ and open the template in the editor.
         <title></title>
         <style>
             html {font-family: "Courier New", sans-serif, monospace;}
-            table {border: 1px; width: 75%; text-justify: distribute;}
+            table {border: 1px; width: 75%; text-align: center; white-space: nowrap;}
             thead, th {font-weight: normal; border: 1px solid;}
-            #comments {width: 50%;}
-            #td_comments {text-align: left;}
-            td {text-align: center;}
+            .table_text {white-space: nowrap; overflow: ellipsis; text-align: left;}
+            .comments{width: 50%;}
             #logout {display: inline; position: absolute; right: 25%;}
             #datepicker {display: inline; position: absolute; left: 25%;}
         </style>   

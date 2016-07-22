@@ -34,6 +34,10 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
     
     $login = TS_URL.$login;
     
+//    ENTER CODE TO DISTINGUISH BETWEEN AUTHENTICATED AND NOT-AUTHENTICATED USER ...
+//    THEN SWITCH BETWEEN ADDING, EDITING OR DELETING
+//    ALTERNATIVELY SETUP DB CALLS AS A SERVICE AND CALL RELEVANT SERVICE IN THEIR SEPARATE ROUTES (ADD, EDIT, DELETE) ....
+    
     if(empty($_POST['username']) && !empty($_POST['password'])){
         
         return $app['twig']->render('login.twig');
@@ -156,7 +160,7 @@ $app->post('/', function($loginUrl = 'login', $getItemsUrl = 'assignedItems/tick
 });
 
 
-$app->post('/addTicket', function() use($app){
+$app->post('/addTimesheet', function() use($app){
     
     session_start();
 
@@ -170,18 +174,22 @@ $app->post('/addTicket', function() use($app){
                         . mysqli_connect_error() );
             }
     mysqli_set_charset($con, 'utf-8');
-    
-    echo 'type: ' . gettype($_POST['created']) . '<br/>';
-    
+
     $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" .$_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
     
     $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
             
-    $iwsResult = mysqli_query($con, $dbQuery);
+    if($iwsResult = mysqli_query($con, $dbQuery)){
+        
+        echo 'updating ticket view ... <br/>';
+        
+    }
     
-    echo 'db query: ' . $dbQuery . '<br/>';
-    
-    echo 'posted?? ' . json_encode($iwsResult) . '<br/>';
+    else {
+        
+        echo 'check your form data';
+        
+    }
     
     return $app['twig']->render('viewTickets.twig', $tickets);
 });
