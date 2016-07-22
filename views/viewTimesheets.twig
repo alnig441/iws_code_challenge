@@ -21,16 +21,24 @@
             </thead>
             <tbody>
                 {% for timesheet in timesheets %}
-                <form method="post" action="edit/itemId" name="manageTicek">
+{#                <form method="post" name="manageTimesheet" action="index.php">#}
                     <tr>
                         <td>{{timesheet.created}}</td>
                         <td>{{timesheet.hours}}</td>
                         <td class="table_text ticket">{{timesheet.ticket}}</td>
                         <td class="table_text comments">{{timesheet.comments}}</td>
                         <td><input type="checkbox" value="true"></td>
-                        <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
+                        <td>
+                            <form method="post" action="edit">
+                                <input type='hidden' value={{timesheet.id}} name='id'/>
+                                <input type="submit" value="Edit" action="edit"/>
+                            </form>
+                            <form method='post' action='delete'>
+                                <input type='hidden' value={{timesheet.id}} name='id'/> 
+                                <input type="submit" value="Delete" action="delete"/></td>
+                            </form>
                     </tr>
-                </form>
+{#                </form>#}
                 {% endfor %}
             </tbody>
         </table><br/>

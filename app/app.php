@@ -25,9 +25,9 @@ $app->get('/', function() use($app){
 
 });
 
-$app->post('/edit/{itemId}', function() use($app){
+$app->post('/edit', function() use($app){
     
-    echo 'get one:'.json_encode($_POST).'<br/>';
+    echo 'editing ticket id: '.$_POST['id'].'<br/>';
     
     return $app['twig']->render('editTicket.twig');
 });
@@ -91,7 +91,7 @@ $app->post('/', function() use($app){
                 'timesheets' => $timesheets,
              );
             
-            return $app['twig']->render('viewTickets.twig', $buildView);
+            return $app['twig']->render('viewTimesheets.twig', $buildView);
         }
     }
 });
@@ -104,8 +104,6 @@ $app->post('/addTimesheet', function() use($app){
     $userId = $_SESSION['userId'];
 
     $_POST['userId'] = $_SESSION['userId'];
-    
-    echo 'week: ' . $_POST['week'] . '<br/>';
    
     $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
             if(!$con){
@@ -131,7 +129,7 @@ $app->post('/addTimesheet', function() use($app){
             'timesheets' => $timesheets,
          );
 
-        return $app['twig']->render('viewTickets.twig', $buildView);
+        return $app['twig']->render('viewTimesheets.twig', $buildView);
     }
     
     else {
@@ -143,20 +141,60 @@ $app->post('/addTimesheet', function() use($app){
     mysqli_close($con);
     mysqli_free_result($iwsResult);
     
-    return $app['twig']->render('viewTickets.twig', $tickets);
+    return $app['twig']->render('viewTimesheets.twig', $tickets);
 });
 
-$app->post('/edit/update', function() use($app){
-   
-    echo 'editing ticket'.json_encode($_POST).'<br/>';
+$app->post('/delete', function() use($app){
     
-    return $app['twig']->render('viewTickets.twig', $tickets);
+    session_start();
     
-});
+    if(isset($_POST['id'])){
+        
+        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
 
-$app->post('/edit/delete', function() use($app){
+        if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+        }
+
+        mysqli_set_charset($con, 'utf-8');
+
+        $dbQuery = "DELETE FROM timesheets WHERE id = ". $_POST['id'] . " AND userId = " . $_SESSION['userId'];
+
+        mysqli_query($con, $dbQuery);
+        
+        mysqli_close($con);
+
+        $tickets = getItems($_SESSION['userId']);
+
+        $timesheets = getTimesheet($_SESSION['userId']);
+        
+        $buildView = array(
+            'tickets' => $tickets,
+            'timesheets' => $timesheets,
+        );
+        
+        return $app['twig']->render('viewTimesheets.twig', $buildView);
+
+    }
+    
+    else {
+        
+        $tickets = getItems($_SESSION['userId']);
+
+        $timesheets = getTimesheet($_SESSION['userId']);
+        
+        $buildView = array(
+            'tickets' => $tickets,
+            'timesheets' => $timesheets,
+        );
+        
+        return $app['twig']->render('viewTimesheets.twig', $buildView);
+    }
    
-    echo 'deleting ticket<br/>';
+   
+    
+    
     
 });
 

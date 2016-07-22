@@ -26,7 +26,8 @@ function getTimesheet($userId){
                 'hours' => null,
                 'ticket' => null,
                 'comments' => null,
-                'billable' => null
+                'billable' => null,
+                'id' => null
             )
         );
     }

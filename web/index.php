@@ -19,6 +19,7 @@ and open the template in the editor.
             .comments input{size:100%; width: 99%;}
             #logout {display: inline; position: absolute; right: 25%;}
             #datepicker {display: inline; position: absolute; left: 25%;}
+            td form{display:inline;}
         </style>   
     </head>
     <body>
