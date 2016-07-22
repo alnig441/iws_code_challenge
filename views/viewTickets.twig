@@ -1,9 +1,9 @@
 
 <center>
-    <form name="select_week">
-        <input id="datepicker" type="date"/>
+    <form name="select_week"  method='post'>
+        <input id="datepicker" type="week" name="week" onchange=/>
     </form>
-    <form action="" name='logout'>
+    <form action="index.php" name='logout'>
         <input id='logout' type="submit" value="logout" name="logout" />
     </form>
     <h1>Week of ?? </h1>
@@ -25,7 +25,7 @@
                     <tr>
                         <td>{{timesheet.created}}</td>
                         <td>{{timesheet.hours}}</td>
-                        <td class="table_text">{{timesheet.ticket}}</td>
+                        <td class="table_text ticket">{{timesheet.ticket}}</td>
                         <td class="table_text comments">{{timesheet.comments}}</td>
                         <td><input type="checkbox" value="true"></td>
                         <td><input type="submit" value="Edit"/><input type="submit" value="Delete" action="delete"/></td>
@@ -57,7 +57,7 @@
                                 <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
                         </select</td>
-                    <td class='table_text comments'><input type="textarea" name="comments" size="100%"/></td>
+                    <td class='table_text comments'><input type="text" name="comments"/></td>
                     <td><input type="checkbox" name="billable"/></td>
                     <td><input type="submit" value="Add" /></td>
                 </tr>
