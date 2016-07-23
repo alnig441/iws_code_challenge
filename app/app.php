@@ -8,8 +8,7 @@ define(LOGIN, "login");
 define(GET_ITEMS, "assignedItems/tickets/");
 
 require_once __DIR__.'/../vendor/autoload.php';
-include dirname(__FILE__).'/../src/services/getTimesheets.php';
-include dirname(__FILE__).'/../src/services/getItems.php';
+include dirname(__FILE__).'/../src/services/buildView.php';
 
 $app = new Silex\Application();
 
@@ -27,9 +26,17 @@ $app->get('/', function() use($app){
 
 $app->post('/edit', function() use($app){
     
-    echo 'editing ticket id: '.$_POST['id'].'<br/>';
     
-    return $app['twig']->render('editTicket.twig');
+    if(isset($_POST['id'])){
+        
+        echo 'editing timesheet id: ' . $_POST['id'] . '<br/>';
+        
+    }
+
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+        
+    
+
 });
 
 $app->post('/', function() use($app){
@@ -72,7 +79,7 @@ $app->post('/', function() use($app){
         }
         
         else {
-//            
+
             if(!isset($_SESSION['userId'])){
                 
                 $_SESSION['userId'] = $user['userId'];
@@ -82,16 +89,7 @@ $app->post('/', function() use($app){
                 
             }
             
-            $tickets = getItems($_SESSION['userId']);
-            
-            $timesheets = getTimesheet($_SESSION['userId']);
-
-            $buildView = array(
-                'tickets' => $tickets,
-                'timesheets' => $timesheets,
-             );
-            
-            return $app['twig']->render('viewTimesheets.twig', $buildView);
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
         }
     }
 });
@@ -115,33 +113,16 @@ $app->post('/addTimesheet', function() use($app){
     $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" .$_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
     
     $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
-            
-    if($iwsResult = mysqli_query($con, $dbQuery)){
-        
-//            BUILD ARRAY TO SEND TO TWIG TEMPLATE (EXISTING TIMESHEETS FROM TIMESHEET DB + ASSIGNED ITEMS FROM TICKET DB
-        
-        $timesheets = getTimesheet($_SESSION['userId']);
-
-        $tickets = getItems($_SESSION['userId']);
-
-        $buildView = array(
-            'tickets' => $tickets,
-            'timesheets' => $timesheets,
-         );
-
-        return $app['twig']->render('viewTimesheets.twig', $buildView);
-    }
     
-    else {
+    if(!mysqli_query($con, $dbQuery)){
         
         echo 'check your form data';
-        
+
     }
     
-    mysqli_close($con);
-    mysqli_free_result($iwsResult);
-    
-    return $app['twig']->render('viewTimesheets.twig', $tickets);
+    mysqli_close($con);  
+        
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
 });
 
 $app->post('/delete', function() use($app){
@@ -165,37 +146,12 @@ $app->post('/delete', function() use($app){
         
         mysqli_close($con);
 
-        $tickets = getItems($_SESSION['userId']);
-
-        $timesheets = getTimesheet($_SESSION['userId']);
-        
-        $buildView = array(
-            'tickets' => $tickets,
-            'timesheets' => $timesheets,
-        );
-        
-        return $app['twig']->render('viewTimesheets.twig', $buildView);
-
-    }
-    
-    else {
-        
-        $tickets = getItems($_SESSION['userId']);
-
-        $timesheets = getTimesheet($_SESSION['userId']);
-        
-        $buildView = array(
-            'tickets' => $tickets,
-            'timesheets' => $timesheets,
-        );
-        
-        return $app['twig']->render('viewTimesheets.twig', $buildView);
     }
    
+
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+
    
-    
-    
-    
 });
 
 return $app;
