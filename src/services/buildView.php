@@ -37,6 +37,7 @@ function getTimesheets($userId){
                 'ticket' => null,
                 'comments' => null,
                 'billable' => null,
+                'checked' => null,
                 'id' => null
             )
         );

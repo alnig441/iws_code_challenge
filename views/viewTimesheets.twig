@@ -27,7 +27,7 @@
                         <td>{{timesheet.hours}}</td>
                         <td class="table_text ticket">{{timesheet.ticket}}</td>
                         <td class="table_text comments">{{timesheet.comments}}</td>
-                        <td><input type="checkbox" {{timesheet.checked}}></td>
+                        <td><input type="checkbox" {{timesheet.checked}} disabled></td>
                         <td>
                             <form method="post" action="edit">
                                 <input type='hidden' value={{timesheet.id}} name='id'/>
