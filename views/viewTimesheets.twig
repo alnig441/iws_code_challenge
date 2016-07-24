@@ -27,7 +27,7 @@
                         <td>{{timesheet.hours}}</td>
                         <td class="table_text ticket">{{timesheet.ticket}}</td>
                         <td class="table_text comments">{{timesheet.comments}}</td>
-                        <td><input type="checkbox" value="true"></td>
+                        <td><input type="checkbox" {{timesheet.checked}}></td>
                         <td>
                             <form method="post" action="edit">
                                 <input type='hidden' value={{timesheet.id}} name='id'/>
@@ -43,7 +43,7 @@
             </tbody>
         </table><br/>
 {#    </form>#}
-    <p> Add Timesheet </p>
+    <p> Add Entry </p>
     <form method='POST' action='addTimesheet'>
         <table>
             <thead>
@@ -66,7 +66,7 @@
                             {% endfor %}
                         </select</td>
                     <td class='table_text comments'><input type="text" name="comments"/></td>
-                    <td><input type="checkbox" name="billable"/></td>
+                    <td><input type="checkbox" name="billable" value=1 /></td>
                     <td><input type="submit" value="Add" /></td>
                 </tr>
             </tbody>

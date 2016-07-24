@@ -1,6 +1,7 @@
 {#<?php echo "session" . $_SESSION['userId'] . "<br/>";?>#}
 
 <center>
+    <p> Edit Entry </p>
     <form name="editTicket" method="POST" action='update'>
         <table border="1">
             <thead>
@@ -14,14 +15,16 @@
                 </tr>
             </thead>
             <tbody>
+                {% for timesheet in timesheet %}
                 <tr>
-                    <td></td>
-                    <td><input type="text" name="hours" value=></td>
-                    <td></td>
-                    <td><input type="textarea" name="comments" vaulue=''></td>
-                    <td><input type='checkbox' name='billable'></td>
+                    <td><input type="hidden" name="id" value={{timesheet.id}}>{{timesheet.created}}</td>
+                    <td><input type="text" name="hours" value={{timesheet.hours}}></td>
+                    <td>{{timesheet.ticket}}</td>
+                    <td><input type='text' name="comments" value={{timesheet.comments}}></td>
+                    <td><input type='checkbox' name='billable' value=1 {{timesheet.checked}}></td>
                     <td><input type="submit" value="save" name="saveEdit"></td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
 

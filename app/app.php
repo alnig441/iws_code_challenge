@@ -29,14 +29,68 @@ $app->post('/edit', function() use($app){
     
     if(isset($_POST['id'])){
         
-        echo 'editing timesheet id: ' . $_POST['id'] . '<br/>';
+        
+        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+        if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+        }
+        mysqli_set_charset($con, 'utf-8');
+
+        $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ." AND id = " . $_POST['id'];
+
+        $iwsResult = mysqli_query($con, $dbQuery);
+        
+        $timesheet = array(
+            'timesheet' => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
+        );
+        
+        mysqli_close($con);
+        mysqli_free_result($iwsResult);
+        
+        if($timesheet['timesheet'][0]['billable'] == 1){
+            $timesheet['timesheet'][0]['checked'] ='checked';
+        } else{
+            $timesheet['timesheet'][0]['checked'] = null;
+        }
+        
+        return $app['twig']->render('editTicket.twig', $timesheet);
         
     }
-
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
-        
     
+    else {
+        
+           return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    }
 
+});
+
+$app->post('/update', function() use($app){
+
+        
+        
+        if(!isset($_POST['billable'])){
+            $_POST['billable'] = 0;
+        }
+       
+        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+        
+        if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+        }
+        mysqli_set_charset($con, 'utf-8');
+        
+        $dbQuery = "UPDATE timesheets SET hours=" . $_POST['hours'] . ", comments = '" . $_POST['comments'] . "', billable = " . $_POST['billable'] . "  WHERE id = " . $_POST['id'] . " AND userId = " . $_SESSION['userId'];
+        
+        if(!mysqli_query($con, $dbQuery)){
+            echo 'something went wrong <br/>';
+        }
+        
+        mysqli_close($con);
+
+        return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    
 });
 
 $app->post('/', function() use($app){

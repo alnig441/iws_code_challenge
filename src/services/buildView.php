@@ -45,11 +45,22 @@ function getTimesheets($userId){
     else {
         
         $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
+
+         for( $i = 0; $i < sizeof($timesheets); $i++ ) {
+
+             if($timesheets[$i]['billable'] == 1){
+                $timesheets[$i]['checked'] = 'checked'; 
+             }else{
+             $timesheets[$i]['checked'] = null;
+             }
+
+         }
+        
     }
     
     mysqli_close($con);
     mysqli_free_result($iwsResult);
-    
+
     return $timesheets;
    
 }
