@@ -27,37 +27,19 @@ function getTimesheets($userId){
     $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $userId ."";
 
     $iwsResult = mysqli_query($con, $dbQuery);
-
-    if(mysqli_num_rows($iwsResult) < 1){
-
-        $timesheets = array(
-            0 => array(
-                'created' => null,
-                'hours' => null,
-                'ticket' => null,
-                'comments' => null,
-                'billable' => null,
-                'checked' => null,
-                'id' => null
-            )
-        );
-    }
-
-    else {
         
-        $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
+    $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
 
-         for( $i = 0; $i < sizeof($timesheets); $i++ ) {
+     for( $i = 0; $i < sizeof($timesheets); $i++ ) {
 
-             if($timesheets[$i]['billable'] == 1){
-                $timesheets[$i]['checked'] = 'checked'; 
-             }else{
-             $timesheets[$i]['checked'] = null;
-             }
-
+         if($timesheets[$i]['billable'] == 1){
+            $timesheets[$i]['checked'] = 'checked'; 
+         }else{
+         $timesheets[$i]['checked'] = null;
          }
-        
-    }
+
+     }
+
     
     mysqli_close($con);
     mysqli_free_result($iwsResult);

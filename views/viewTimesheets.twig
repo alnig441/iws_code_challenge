@@ -20,26 +20,28 @@
                 </tr>
             </thead>
             <tbody>
-                {% for timesheet in timesheets %}
-{#                <form method="post" name="manageTimesheet" action="index.php">#}
-                    <tr>
-                        <td>{{timesheet.created}}</td>
-                        <td>{{timesheet.hours}}</td>
-                        <td class="table_text ticket">{{timesheet.ticket}}</td>
-                        <td class="table_text comments">{{timesheet.comments}}</td>
-                        <td><input type="checkbox" {{timesheet.checked}} disabled></td>
-                        <td>
-                            <form method="post" action="edit">
-                                <input type='hidden' value={{timesheet.id}} name='id'/>
-                                <input type="submit" value="Edit" action="edit"/>
-                            </form>
-                            <form method='post' action='delete'>
-                                <input type='hidden' value={{timesheet.id}} name='id'/> 
-                                <input type="submit" value="Delete" action="delete"/></td>
-                            </form>
-                    </tr>
-{#                </form>#}
-                {% endfor %}
+                {% if timesheets %}
+                    {% for timesheet in timesheets %}
+    {#                <form method="post" name="manageTimesheet" action="index.php">#}
+                        <tr>
+                            <td>{{timesheet.created}}</td>
+                            <td>{{timesheet.hours}}</td>
+                            <td class="table_text ticket">{{timesheet.ticket}}</td>
+                            <td class="table_text comments">{{timesheet.comments}}</td>
+                            <td><input type="checkbox" {{timesheet.checked}} disabled></td>
+                            <td>
+                                <form method="post" action="edit">
+                                    <input type='hidden' value={{timesheet.id}} name='id'/>
+                                    <input type="submit" value="Edit" action="edit"/>
+                                </form>
+                                <form method='post' action='delete'>
+                                    <input type='hidden' value={{timesheet.id}} name='id'/> 
+                                    <input type="submit" value="Delete" action="delete"/></td>
+                                </form>
+                        </tr>
+    {#                </form>#}
+                    {% endfor %}
+                {% endif %}
             </tbody>
         </table><br/>
 {#    </form>#}
@@ -61,9 +63,11 @@
                     <td><input type="date" name="created"/></td>
                     <td><input type="text" name="hours"/></td>
                     <td class="table_text comment"><select name="ticket">
+                        {% if tickets.items %}            
                             {% for ticket in tickets.items %}
                                 <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
                             {% endfor %}
+                        {% endif %}
                         </select</td>
                     <td class='table_text comments'><input type="text" name="comments"/></td>
                     <td><input type="checkbox" name="billable" value=1 /></td>

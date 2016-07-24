@@ -151,6 +151,11 @@ $app->post('/', function() use($app){
 
 $app->post('/addTimesheet', function() use($app){
     
+    $stamp = strtotime($_POST['created']);
+    
+    echo 'timestamp: ' . $stamp . '<br/>';
+    echo 'today: ' . time() . '<br/>';
+    
     session_start();
     
     $userId = $_SESSION['userId'];

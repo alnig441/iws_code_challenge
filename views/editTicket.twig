@@ -15,16 +15,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for timesheet in timesheet %}
-                <tr>
-                    <td><input type="hidden" name="id" value={{timesheet.id}}>{{timesheet.created}}</td>
-                    <td><input type="text" name="hours" value={{timesheet.hours}}></td>
-                    <td>{{timesheet.ticket}}</td>
-                    <td><input type='text' name="comments" value={{timesheet.comments}}></td>
-                    <td><input type='checkbox' name='billable' value=1 {{timesheet.checked}}></td>
-                    <td><input type="submit" value="save" name="saveEdit"></td>
-                </tr>
-                {% endfor %}
+                {% if timesheet %}
+                    {% for timesheet in timesheet %}
+                    <tr>
+                        <td><input type="hidden" name="id" value={{timesheet.id}}>{{timesheet.created}}</td>
+                        <td><input type="text" name="hours" value={{timesheet.hours}}></td>
+                        <td>{{timesheet.ticket}}</td>
+                        <td><input type='text' name="comments" value={{timesheet.comments}}></td>
+                        <td><input type='checkbox' name='billable' value=1 {{timesheet.checked}}></td>
+                        <td><input type="submit" value="save" name="saveEdit"></td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
             </tbody>
         </table>
 
