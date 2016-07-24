@@ -22,7 +22,7 @@
                         <td><input type="text" name="hours" value={{timesheet.hours}}></td>
                         <td>{{timesheet.ticket}}</td>
                         <td><input type='text' name="comments" value={{timesheet.comments}}></td>
-                        <td><input type='checkbox' name='billable' value=1 {{timesheet.checked}}></td>
+                        <td><input type='checkbox' name='billable' value=1 {%if timesheet.billable %}checked{% endif %}></td>
                         <td><input type="submit" value="save" name="saveEdit"></td>
                     </tr>
                     {% endfor %}

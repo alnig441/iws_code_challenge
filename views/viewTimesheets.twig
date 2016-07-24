@@ -7,7 +7,6 @@
         <input id='logout' type="submit" value="logout" name="logout" />
     </form>
     <h1>Week of ?? </h1>
-{#    <form name='editTicketForm' method="post" action="edit/itemId">#}
         <table>
             <thead>
                 <tr>
@@ -22,13 +21,12 @@
             <tbody>
                 {% if timesheets %}
                     {% for timesheet in timesheets %}
-    {#                <form method="post" name="manageTimesheet" action="index.php">#}
                         <tr>
                             <td>{{timesheet.created}}</td>
                             <td>{{timesheet.hours}}</td>
                             <td class="table_text ticket">{{timesheet.ticket}}</td>
                             <td class="table_text comments">{{timesheet.comments}}</td>
-                            <td><input type="checkbox" {{timesheet.checked}} disabled></td>
+                            <td><input type="checkbox" {%if timesheet.billable %}checked{% endif %} disabled></td>
                             <td>
                                 <form method="post" action="edit">
                                     <input type='hidden' value={{timesheet.id}} name='id'/>
@@ -39,12 +37,10 @@
                                     <input type="submit" value="Delete" action="delete"/></td>
                                 </form>
                         </tr>
-    {#                </form>#}
                     {% endfor %}
                 {% endif %}
             </tbody>
         </table><br/>
-{#    </form>#}
     <p> Add Entry </p>
     <form method='POST' action='addTimesheet'>
         <table>
