@@ -1,12 +1,17 @@
 
 <center>
-    <form name="select_week"  method='post'>
-        <input id="datepicker" type="week" name="week" onchange=/>
-    </form>
-    <form action="index.php" name='logout'>
-        <input id='logout' type="submit" value="logout" name="logout" />
-    </form>
-    <h1>Week of ?? </h1>
+    <div>
+        <form id="datepicker" name="select_week"  method='post' action="week">
+            <input  type="week" name="week" />
+            <input type='submit'>
+        </form>
+        <form id='logout' action="index.php" name='logout'>
+            <input  type="submit" value="logout" name="logout" />
+        </form>
+    </div>
+    <div>
+        <h1>Week of {{timesheets.date}} </h1>
+    </div>
         <table>
             <thead>
                 <tr>
@@ -20,7 +25,7 @@
             </thead>
             <tbody>
                 {% if timesheets %}
-                    {% for timesheet in timesheets %}
+                    {% for timesheet in timesheets.timesheets %}
                         <tr>
                             <td>{{timesheet.created}}</td>
                             <td>{{timesheet.hours}}</td>

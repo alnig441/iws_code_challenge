@@ -24,9 +24,15 @@ $app->get('/', function() use($app){
 
 });
 
+$app->post('/week' , function() use($app){
+    
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week']));
+    
+});
+
 $app->post('/edit', function() use($app){
     
-    
+   
     if(isset($_POST['id'])){
         
         
@@ -150,11 +156,6 @@ $app->post('/', function() use($app){
 
 
 $app->post('/addTimesheet', function() use($app){
-    
-    $stamp = strtotime($_POST['created']);
-    
-    echo 'timestamp: ' . $stamp . '<br/>';
-    echo 'today: ' . time() . '<br/>';
     
     session_start();
     

@@ -12,13 +12,13 @@ and open the template in the editor.
         <style>
             html {font-family: "Courier New", sans-serif, monospace;}
             td{font-size: 14px;}
-            table {border: 1px; width: 75%; text-align: center; white-space: nowrap;}
+            table, div {border: 1px; width: 75%; text-align: center; white-space: nowrap;}
             thead, th {font-weight: normal; border: 1px solid;}
             .table_text {white-space: nowrap; overflow: hidden; text-align: left;}
             .comments{width: 50%;}
             .comments input{size:100%; width: 99%;}
-            #logout {display: inline; position: absolute; right: 25%;}
-            #datepicker {display: inline; position: absolute; left: 25%;}
+            #logout{float:right;}
+            #datepicker{float: left;}
             td form{display:inline;}
         </style>   
     </head>
