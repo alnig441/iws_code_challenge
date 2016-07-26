@@ -2,6 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/src/services/buildView.php</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/web/index.php</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/views/viewTimesheets.twig</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/app/app.php</file>
+            <file>file:/Applications/MAMP/htdocs/iws_code_challenge/views/download.twig</file>
+        </group>
     </open-files>
 </project-private>

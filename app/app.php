@@ -30,75 +30,6 @@ $app->post('/week' , function() use($app){
     
 });
 
-$app->post('/edit', function() use($app){
-    
-   
-    if(isset($_POST['id'])){
-        
-        
-        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-        if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-        }
-        mysqli_set_charset($con, 'utf-8');
-
-        $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ." AND id = " . $_POST['id'];
-
-        $iwsResult = mysqli_query($con, $dbQuery);
-        
-        $timesheet = array(
-            'timesheet' => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
-        );
-        
-        mysqli_close($con);
-        mysqli_free_result($iwsResult);
-        
-        if($timesheet['timesheet'][0]['billable'] == 1){
-            $timesheet['timesheet'][0]['checked'] ='checked';
-        } else{
-            $timesheet['timesheet'][0]['checked'] = null;
-        }
-        
-        return $app['twig']->render('editTicket.twig', $timesheet);
-        
-    }
-    
-    else {
-        
-           return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
-    }
-
-});
-
-$app->post('/update', function() use($app){
-
-        
-        
-        if(!isset($_POST['billable'])){
-            $_POST['billable'] = 0;
-        }
-       
-        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-        
-        if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-        }
-        mysqli_set_charset($con, 'utf-8');
-        
-        $dbQuery = "UPDATE timesheets SET hours=" . $_POST['hours'] . ", comments = '" . $_POST['comments'] . "', billable = " . $_POST['billable'] . "  WHERE id = " . $_POST['id'] . " AND userId = " . $_SESSION['userId'];
-        
-        if(!mysqli_query($con, $dbQuery)){
-            echo 'something went wrong <br/>';
-        }
-        
-        mysqli_close($con);
-
-        return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
-    
-});
-
 $app->post('/', function() use($app){
     
     session_start();
@@ -155,14 +86,12 @@ $app->post('/', function() use($app){
 });
 
 
-$app->post('/addTimesheet', function() use($app){
+$app->post('/add', function() use($app){
     
     session_start();
     
-    $userId = $_SESSION['userId'];
-
     $_POST['userId'] = $_SESSION['userId'];
-   
+    
     $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
             if(!$con){
                 exit('Connect Error (' . mysqli_connect_errno() . ')'
@@ -170,7 +99,7 @@ $app->post('/addTimesheet', function() use($app){
             }
     mysqli_set_charset($con, 'utf-8');
 
-    $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" .$_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
+    $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" . $_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
     
     $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
     
@@ -212,6 +141,108 @@ $app->post('/delete', function() use($app){
     return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
 
    
+});
+
+$app->post('/edit', function() use($app){
+    
+   
+    if(isset($_POST['id'])){
+        
+        
+        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+        if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+        }
+        mysqli_set_charset($con, 'utf-8');
+
+        $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ." AND id = " . $_POST['id'];
+
+        $iwsResult = mysqli_query($con, $dbQuery);
+        
+        $timesheet = array(
+            'timesheet' => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
+        );
+       
+        mysqli_close($con);
+        mysqli_free_result($iwsResult);
+        
+        if($timesheet['timesheet'][0]['billable'] == 1){
+            $timesheet['timesheet'][0]['checked'] ='checked';
+        } else{
+            $timesheet['timesheet'][0]['checked'] = null;
+        }
+        
+        return $app['twig']->render('editTimesheet.twig', $timesheet);
+        
+    }
+    
+    else {
+        
+           return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    }
+
+});
+
+$app->post('/update', function() use($app){
+
+        
+        
+        if(!isset($_POST['billable'])){
+            $_POST['billable'] = 0;
+        }
+       
+        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+        
+        if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+        }
+        mysqli_set_charset($con, 'utf-8');
+        
+        $dbQuery = "UPDATE timesheets SET hours=" . $_POST['hours'] . ", comments = '" . $_POST['comments'] . "', billable = " . $_POST['billable'] . "  WHERE id = " . $_POST['id'] . " AND userId = " . $_SESSION['userId'];
+        
+        if(!mysqli_query($con, $dbQuery)){
+            echo 'something went wrong <br/>';
+        }
+        
+        mysqli_close($con);
+
+        return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    
+});
+
+
+$app->get('/admin', function() use($app){
+   
+    session_start();
+
+    $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
+    
+    if(!$con){
+            exit('Connect Error (' . mysqli_connect_errno() . ')'
+                    . mysqli_connect_error() );
+    }
+    
+    $file = fopen("timesheets.csv", "w");
+    fputcsv($file, array('DATE', 'HOURS', 'TICKET', 'COMMENTS', 'BILLABLE', 'USERID'));
+    
+    mysqli_set_charset($con, 'utf-8');
+    
+    $dbQuery = "SELECT created, hours, ticket, comments, billable, userId FROM timesheets WHERE userId = '" . $_SESSION['userId'] . "' AND created >= '" . $_SESSION['begin'] . "' AND created < '" . $_SESSION['end'] . "' ORDER BY created ASC";
+    
+    if(!$result = mysqli_query($con, $dbQuery)){
+        echo 'something went wrong';
+    }
+    
+    while ($timesheets = mysqli_fetch_assoc($result)){
+        fputcsv($file, $timesheets);
+    }
+    
+    mysqli_free_result($result);
+    mysql_close($con);
+    
+    return $app['twig']->render('admin.twig');
 });
 
 return $app;

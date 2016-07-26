@@ -16,14 +16,16 @@ function getTimesheets($userId, $date){
     
     if(!$date){
         $stamp = getdate((time() + 345600) - time()% 604800);
-        $date = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';   
+        $dateBegin = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';   
     }else {
         $stamp = getdate(strtotime($date));
-        $date = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';
+        $dateBegin = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';
     }
   
     $stampEnd = getdate($stamp[0] + 604800);
     $dateEnd  = ''. $stampEnd['year'] . '-' . $stampEnd['mon'] . '-' . $stampEnd['mday'] .'';
+    
+    $date = ''. $stamp['mon'] . '-' . $stamp['mday'] .'-' . $stamp['year'] .'';
     
     $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
     if(!$con){
@@ -32,19 +34,24 @@ function getTimesheets($userId, $date){
     }
     mysqli_set_charset($con, 'utf-8');
 
-    $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $userId ." AND created >= '". $date . "' AND created < '" . $dateEnd . "'";
+    $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $userId ." AND created >= '". $dateBegin . "' AND created < '" . $dateEnd . "' ORDER BY created";
 
     $iwsResult = mysqli_query($con, $dbQuery);
-        
-//    $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
+
     $timesheets = array(
         "timesheets" => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
         "date" => $date
     );
+    
+//    $csvFile = fopen("/tmp/export.csv", "w");
+//    fputcsv($csvFile, array("CREATED", "HOURS", "TICKET", "COMMENT", "BILLABLE"));
 
     mysqli_close($con);
     mysqli_free_result($iwsResult);
-
+    
+    $_SESSION['begin'] = $dateBegin;
+    $_SESSION['end'] = $dateEnd;
+    
     return $timesheets;
    
 }

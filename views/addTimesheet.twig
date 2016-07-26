@@ -1,0 +1,31 @@
+<p><strong> Add Entry </Strong></p>
+    <form method='POST' action='add'>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Hours</th>
+                    <th>Ticket</th>
+                    <th>Comments</th>
+                    <th>Billable</th>
+                    <th>Commands</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="date" name="created"/></td>
+                    <td><input type="text" name="hours"/></td>
+                    <td class="table_text comment"><select name="ticket">
+                        {% if tickets.items %}            
+                            {% for ticket in tickets.items %}
+                                <option value="{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}"<?php = ($_POST['ticket'] == "{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}")? "selected":"";?>{{ticket.client}}: {{ticket.itemId}} {{ticket.title}}</option>
+                            {% endfor %}
+                        {% endif %}
+                        </select</td>
+                    <td class='table_text comments'><input type="text" name="comments"/></td>
+                    <td><input type="checkbox" name="billable" value=1 /></td>
+                    <td><input type="submit" value="Add" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
