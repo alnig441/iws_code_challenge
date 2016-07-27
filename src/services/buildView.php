@@ -42,9 +42,6 @@ function getTimesheets($userId, $date){
         "timesheets" => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
         "date" => $date
     );
-    
-//    $csvFile = fopen("/tmp/export.csv", "w");
-//    fputcsv($csvFile, array("CREATED", "HOURS", "TICKET", "COMMENT", "BILLABLE"));
 
     mysqli_close($con);
     mysqli_free_result($iwsResult);

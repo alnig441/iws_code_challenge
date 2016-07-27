@@ -1,0 +1,22 @@
+     <table border="1">
+            <thead>
+                <tr>
+                    <th>Week of {{timesheets.date}}</th>
+                    <th>Ticket</th>
+                    <th>Hours</th>
+                    <th>Billable</th>
+                    <th>Exported to CSV</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for timesheet in timesheets.timesheets %}
+                <tr>
+                    <td>{{timesheet.created}}</td>
+                    <td>{{timesheet.ticket}}</td>
+                    <td>{{timesheet.hours}}</td>
+                    <td>{% if timesheet.billable %}<i class="fa fa-check" aria-hidden="true"></i> {% endif %}</td>
+                    <td>{% if timesheet.exported %}<i class="fa fa-check" aria-hidden="true"></i> {% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>{# empty Twig template #}

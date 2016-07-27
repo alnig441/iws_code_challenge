@@ -1,10 +1,16 @@
 {% extends "base.twig" %}
 
-{% block header %}
+{% block admin_button %}
+    {% endblock %}
+
+{% block datepicker_button %}
+    {% endblock %}
+{#{% block header %}
+    {% block specific_buttons %}
         <form id='logout' action="index.php" name='logout'>
             <input  type="submit" value="Logout" name="logout" />
         </form>
-{% endblock %}
+{% endblock %}#}
 
 {% block caption %}
     <h1> Edit Entry </h1>

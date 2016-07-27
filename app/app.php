@@ -9,9 +9,13 @@ define(GET_ITEMS, "assignedItems/tickets/");
 
 require_once __DIR__.'/../vendor/autoload.php';
 include dirname(__FILE__).'/../src/services/buildView.php';
+include dirname(__FILE__).'/../src/services/buildCSV.php';
+include dirname(__FILE__).'/../src/services/setExpFlag.php';
 
 $app = new Silex\Application();
 
+
+        
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
@@ -24,10 +28,40 @@ $app->get('/', function() use($app){
 
 });
 
+$app->get('/home', function() use($app){
+    
+    session_start();
+    
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    
+});
+
 $app->post('/week' , function() use($app){
+
+    session_start();
+
+    switch ($_POST['source']){
+        case 'view':
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week']));
+            break;
+        case 'admin':
+            $buildView = buildView($_SESSION['userId'], $_POST['week']);
+            buildCSV();
+            return $app['twig']->render('admin.twig', $buildView);
+            break;
+    }
     
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week']));
+});
+
+$app->post('/setFlag', function() use($app){
     
+    session_start();
+    
+    setFlag();
+    
+    return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['userId'], $_SESSION['begin']));
+   
+
 });
 
 $app->post('/', function() use($app){
@@ -210,39 +244,6 @@ $app->post('/update', function() use($app){
 
         return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
     
-});
-
-
-$app->get('/admin', function() use($app){
-   
-    session_start();
-
-    $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-    
-    if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-    }
-    
-    $file = fopen("timesheets.csv", "w");
-    fputcsv($file, array('DATE', 'HOURS', 'TICKET', 'COMMENTS', 'BILLABLE', 'USERID'));
-    
-    mysqli_set_charset($con, 'utf-8');
-    
-    $dbQuery = "SELECT created, hours, ticket, comments, billable, userId FROM timesheets WHERE userId = '" . $_SESSION['userId'] . "' AND created >= '" . $_SESSION['begin'] . "' AND created < '" . $_SESSION['end'] . "' ORDER BY created ASC";
-    
-    if(!$result = mysqli_query($con, $dbQuery)){
-        echo 'something went wrong';
-    }
-    
-    while ($timesheets = mysqli_fetch_assoc($result)){
-        fputcsv($file, $timesheets);
-    }
-    
-    mysqli_free_result($result);
-    mysql_close($con);
-    
-    return $app['twig']->render('admin.twig');
 });
 
 return $app;

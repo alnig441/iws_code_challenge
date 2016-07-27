@@ -4,11 +4,14 @@
         <title>{% block title %}RS Timesheet {% endblock %}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/src/external/jquery-ui.min.css">
+
         <style>
             html {font-family: "Courier New", sans-serif, monospace;}
             body {width: 75%;}
             html, body, div, table, form {margin: auto;}
-            td{font-size: 14px;}
+            td{font-size: 14px; border: none;}
             table{width: 100%;}
             #ts_table, table, div {border: 1px; text-align: center; white-space: nowrap;}
             thead, th {font-weight: normal; border: 1px solid;}
@@ -16,46 +19,77 @@
             .comments input{width:99%;}
             .comments {width: 50%;}
             #logout {position:absolute; right: 10%;}
-            #admin {position:absolute; right: 15%;}
+            #admin, #home {position:absolute; right: 15%;}
             #datepicker{position: absolute; left: 10%}
             td form{display:inline;}
+            a {text-decoration: none; transform: none; color: black;}
+            #footer{position: relative; top: 10px;}
         </style>
+      
+        <script  type="text/javascript" src='/src/external/jquery-ui.min.js'></script>
+            {% block client_script %}
+            {% endblock %}
         
         {% endblock %}
     </head>
     <body>
+    <div id='main>
+        {% block main %}    
         <div id='header'>
             {% block header %}
-                <form id="datepicker" name="select_week"  method='post' action="week">
-                    <input  type="week" name="week" />
-                    <input type='submit' value="Change Week">
-                </form>
-                <form id='logout' action="index.php" name='logout'>
-                    <input  type="submit" value="Logout" name="logout" />
-                </form>
-            {% endblock %}
+                
+                <div id='datepicker_button'>
+                    {% block datepicker_button %}
+                    <form id="datepicker" name="select_week"  method='post' action="week">
+                        {% block source %}
+
+                        {% endblock %}
+                        <input id='week' type="week" name="week"/>
+                        <input type='submit' value="Change Week">
+                    </form>
+                        {% endblock %}
+                </div>
+                
+                <div id='logout_button'>
+                    {% block logout_button%}
+                    <form id='logout' action="index.php" name='logout'>
+                        <input  type="submit" value="Logout" name="logout" />
+                    </form>
+                    {% endblock %}
+                </div>
+                
+                <div id='home_button'>
+                    {% block home_button %}
+                    <form id='home' action="home">
+                            <input  type="submit" value="Home"/>
+                    </form>
+                    {% endblock %}
+                </div>
+                
+                <div id='admin_button'>
+                    {% block admin_button %}
+                    <form id="admin" name="admin" action="week" method="POST">
+                        <input type='hidden' name='source' value='admin'>
+                        <input type='submit' value="Admin">
+                    </form>
+                    {% endblock %}
+                </div>
+
+                <div id='caption'>
+                    {% block caption %}
+                        <h1></h1>
+                    {% endblock %}
+                </div>
+             {% endblock %}
         </div>
         
-         <div id='buttons'>
-            {% block buttons %}
-                <form id="admin" name="admin" action="admin">
-                    <input type='submit' value="admin">
-                </form>
-            {% endblock %}
-        </div>
-        
-        <div id='caption'>
-            {% block caption %}
-                <h1></h1>
-            {% endblock %}
-        </div>
-        
-        <div id='ts_table'></div>
-            {% block ts_table %}
-            <table>
-                <div id='ts_head'>
-                    {% block thead %}
-    {#                    <table>#}
+        <div id='article'>
+            {% block article %}              
+                <div id='ts_table'>
+                    {% block ts_table %}
+                    <table>
+                        <div id='ts_head'>
+                            {% block thead %}
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -66,26 +100,28 @@
                                     <th>Commands</th>
                                 </tr>
                             </thead>
-    {#                    </table#}
+                            {% endblock %}
+                        </div>
+                        <div id='ts_body'>
+                            {% block ts_body %}
+                            {% endblock %}
+                        </div>
+                    </table>    
                     {% endblock %}
                 </div>
-                <div id='ts_body'>
-                    {% block ts_body %}
-                    {% endblock %}
-                </div>
-            </table>    
-            {% endblock %}
+            {% endblock %}    
+            <div id='include'>
+                {% block include %}
+                {% endblock %}
             </div>
-            
-        <div id='content'>
-            {% block content %}
-            {% endblock %}
         </div>
+
         
         <div id='footer'>
             {% block footer %}
             {% endblock %}
         </div>
-        
+    </div>
+        {% endblock %}
     </body>
 </html>

@@ -1,5 +1,12 @@
 {% extends "base.twig" %}
 
+{%block source %}
+    <input type='hidden' name='source' value="view">
+{% endblock %}
+
+{% block home_button %}
+{% endblock %}
+
 {% block caption %}
         <h1>Week of {{timesheets.date}} </h1>
 {% endblock %}
@@ -13,7 +20,7 @@
                             <td>{{timesheet.hours}}</td>
                             <td class="table_text ticket">{{timesheet.ticket}}</td>
                             <td class="table_text comments">{{timesheet.comments}}</td>
-                            <td><input type="checkbox" {%if timesheet.billable %}checked{% endif %} disabled></td>
+                            <td>{%if timesheet.billable %}<i class="fa fa-check" aria-hidden="true"></i>{% endif %}</td>
                             <td>
                                 <form method="post" action="edit">
                                     <input type='hidden' value={{timesheet.id}} name='id'/>
@@ -29,7 +36,7 @@
             </tbody>
 {% endblock %}
 
-{% block content %}
+{% block include %}
     {% include "addTimesheet.twig" %}
 
 {% endblock %}

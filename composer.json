@@ -4,7 +4,7 @@
         "twig/twig": "^1.24",
         "symfony/twig-bridge": "^3.1",
         "guzzlehttp/guzzle": "~6.0",
-        "guzzleHttp/guzzle": "~6.0"
+        "twbs/bootstrap": "^3.3"
     },
     "autoload": {
         "psr-4": {
@@ -12,4 +12,3 @@
         }
     }
 }
- 
