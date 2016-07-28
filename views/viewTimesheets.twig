@@ -1,13 +1,13 @@
-{% extends "base.twig" %}
+{% extends "baseHtml5.twig" %}
 
 {%block source %}
     <input type='hidden' name='source' value="view">
 {% endblock %}
 
-{% block home_button %}
+{% block home %}
 {% endblock %}
 
-{% block caption %}
+{% block mark %}
         <h1>Week of {{timesheets.date}} </h1>
 {% endblock %}
 
@@ -36,7 +36,8 @@
             </tbody>
 {% endblock %}
 
-{% block include %}
+{% block section %}
+    
     {% include "addTimesheet.twig" %}
 
 {% endblock %}

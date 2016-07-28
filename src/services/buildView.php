@@ -15,7 +15,7 @@ function buildView ($userId, $date) {
 function getTimesheets($userId, $date){
     
     if(!$date){
-        $stamp = getdate((time() + 345600) - time()% 604800);
+        $stamp = getdate((time() - 259200) - time()% 604800);
         $dateBegin = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';   
     }else {
         $stamp = getdate(strtotime($date));
@@ -54,37 +54,42 @@ function getTimesheets($userId, $date){
 }
 
 function getItems($userId) {
-
-    $curl = curl_init();
-
-    $getTicketsOptions = array(
-
-        CURLOPT_URL => BASE_URL.GET_ITEMS.$userId,
-        CURLOPT_FOLLOWLOCATION => false,
-        CURLOPT_HEADER => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_COOKIE => $_SESSION['cookie'],
+    
+    if(!$_SESSION['items']){
         
-    );
+        $curl = curl_init();
 
-    curl_setopt_array($curl, $getTicketsOptions);
+        $getTicketsOptions = array(
 
-    $data = curl_exec($curl);
+            CURLOPT_URL => BASE_URL.GET_ITEMS.$userId,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_COOKIE => $_SESSION['cookie'],
 
-    $split  = preg_split('|{|', $data);
-    $ticketStr = '';
+        );
 
-    foreach($split as $key => $value){
-        if($key != 0){
-            $ticketStr = $ticketStr.'{'.$value;
+        curl_setopt_array($curl, $getTicketsOptions);
+
+        $data = curl_exec($curl);
+
+        $split  = preg_split('|{|', $data);
+        $ticketStr = '';
+
+        foreach($split as $key => $value){
+            if($key != 0){
+                $ticketStr = $ticketStr.'{'.$value;
+            }
         }
+
+//        $tickets = json_decode($ticketStr, true);
+        $_SESSION['items'] = json_decode($ticketStr, true);
+        
+        curl_close($curl);
+        
     }
 
-    $tickets = json_decode($ticketStr, true);
-
-    curl_close($curl);
-    
-    return $tickets;
+    return $_SESSION['items'];
 }
 /* 
  * To change this license header, choose License Headers in Project Properties.

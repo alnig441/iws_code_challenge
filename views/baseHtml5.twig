@@ -1,0 +1,147 @@
+<html>
+    <head>
+        {% block head %}
+            <title>{% block title %}RS Timesheet {% endblock %}</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+            
+            <style>
+                html {font-family: "Courier New", sans-serif, monospace;}
+                body {width: 75%;}
+                html, body, div, table, form, footer, mark {margin: auto;}
+                mark, p, footer {text-align: center;}
+                td{font-size: 14px; border: none;}
+                table{width: 100%;}
+                #ts_table, table, div {border: 1px; text-align: center; white-space: nowrap;}
+                thead, th {font-weight: normal; border: 1px solid;}
+                .table_text {white-space: nowrap;  text-align: left;}
+                .comments input{width:99%;}
+                .comments {width: 50%;}
+                #logout {position:absolute; right: 13%;}
+                #admin, #home {position:absolute; right: 17%;}
+                #calendar{position: absolute; left: 13%}
+                td form{display:inline;}
+                a {text-decoration: none; transform: none; color: black;}
+                footer{position: relative; top: 10px;}
+            </style>
+            
+            {% block client_js %}
+            {% endblock %}
+
+            
+        {% endblock %}
+    </head>
+    
+    <body>
+        {% block body %}
+        
+            <main>
+                {% block main %}
+ 
+                <header>
+                    {% block header %}
+
+                    <nav>
+                        {% block nav %}
+                            
+                        <div id='calendar'>
+                            {% block calendar %}
+                            <form name="select_week"  method='post' action="week">
+                                {% block source %}
+
+                                {% endblock %}
+                                <input type="week" name="week" placeholder="YYYY-MM-DD"/>
+                                <input type='submit' value="Change Week">
+                            </form>
+                            {% endblock %}
+                         </div>
+                
+                        <div id='logout'>
+                            {% block logout %}
+                            <form action="index.php" name='logout'>
+                                <input  type="submit" value="Logout" name="logout" />
+                            </form>
+                            {% endblock %}
+                        </div>
+                
+                        <div id='home'>
+                            {% block home %}
+                            <form action="home">
+                                    <input  type="submit" value="Home"/>
+                            </form>
+                            {% endblock %}
+                        </div>
+                
+                        <div id='admin'>
+                            {% block admin %}
+                            <form name="admin" action="week" method="POST">
+                                <input type='hidden' name='source' value='admin'>
+                                <input type='submit' value="Admin">
+                            </form>
+                            {% endblock %}
+                        </div>
+                        
+                        {% endblock %}
+                    </nav>
+                    
+                    <mark>
+                        {% block mark %}
+                            <h1></h1>
+                        {% endblock %}
+                    </mark>
+                        
+                    {% endblock %}
+                </header>
+
+                <article>
+                    {% block article %}
+                        
+                    <div id='ts_table'>
+                        {% block ts_table %}
+                        <table>
+                            <div id='ts_head'>
+                                {% block thead %}
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Hours</th>
+                                        <th>Ticket</th>
+                                        <th>Comments</th>
+                                        <th>Billable</th>
+                                        <th>Commands</th>
+                                    </tr>
+                                </thead>
+                                {% endblock %}
+                            </div>
+                            <div id='ts_body'>
+                                {% block ts_body %}
+                                {% endblock %}
+                            </div>
+                        </table>    
+                        {% endblock %}
+                    </div>
+                        
+                    {% endblock %}
+                    
+                </article>
+                    
+                <section id='include_partial'>
+                    {% block section %}
+                        
+                    {% endblock %}
+                </section>
+
+                <footer>
+                    {% block footer %}
+                        
+                    {% endblock %}
+                </footer>
+                    
+                {% endblock %}
+            </main>
+                
+        {% endblock %}
+    </body>
+    
+</html>
