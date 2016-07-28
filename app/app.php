@@ -12,6 +12,7 @@ include dirname(__FILE__).'/../src/services/buildView.php';
 include dirname(__FILE__).'/../src/services/buildCSV.php';
 include dirname(__FILE__).'/../src/services/setExpFlag.php';
 include dirname(__FILE__).'/../src/services/dbServices.php';
+include dirname(__FILE__).'/../src/services/extAPI.php';
 
 $app = new Silex\Application();
 
@@ -82,27 +83,8 @@ $app->post('/', function() use($app){
     }
     
     else{
-
-        $curl = curl_init();
-
-        $postOptions = array(
-
-            CURLOPT_URL => BASE_URL.LOGIN,
-            CURLOPT_HEADER => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($_POST),
-        );
-
-        curl_setopt_array($curl, $postOptions);
-
-        $data = curl_exec($curl);
-
-        $split = preg_split('|{|', $data);
-        $user = json_decode('{'.$split[1], true);
-      
-        curl_close($curl);
+        
+        $user = getUser();
         
         if(!$user["success"]){
             
@@ -111,19 +93,17 @@ $app->post('/', function() use($app){
         }
         
         else {
-
-            if(!isset($_SESSION['userId'])){
+            
+            $tickets = getTickets();
+            
+            if($tickets['success']){
                 
-                $_SESSION['userId'] = $user['userId'];
-                
-                preg_match_all('|Set-Cookie: (.*);|U', $data, $matches);   
-                $_SESSION['cookie'] = implode('; ', $matches[1]);
-                
+                $con = connectToDb();
+            
+                return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
             }
             
-            $con = connectToDb();
-            
-            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
+
         }
     }
 });
@@ -186,12 +166,4 @@ $app->post('/update', function() use($app){
 });
 
 return $app;
-
-
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
