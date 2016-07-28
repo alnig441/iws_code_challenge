@@ -1,19 +1,21 @@
 <?php
 
-function buildView ($userId, $date) {
+include dirname(__FILE__).'/../src/services/dbServices.php';
+
+function buildView ($userId, $date, $con) {
     
     $buildView = array(
         
         'tickets' => getItems($userId),
-        'timesheets' => getTimesheets($userId, $date)
+        'timesheets' => getTimesheets($userId, $date, $con)
         
     );
     
     return $buildView;
 }
 
-function getTimesheets($userId, $date){
-    
+function getTimesheets($userId, $date, $con){
+
     if(!$date){
         $stamp = getdate((time() - 259200) - time()% 604800);
         $dateBegin = ''. $stamp['year'] . '-' . $stamp['mon'] . '-' . $stamp['mday'] .'';   
@@ -26,25 +28,11 @@ function getTimesheets($userId, $date){
     $dateEnd  = ''. $stampEnd['year'] . '-' . $stampEnd['mon'] . '-' . $stampEnd['mday'] .'';
     
     $date = ''. $stamp['mon'] . '-' . $stamp['mday'] .'-' . $stamp['year'] .'';
-    
-    $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-    if(!$con){
-        exit('Connect Error (' . mysqli_connect_errno() . ')'
-                . mysqli_connect_error() );
-    }
-    mysqli_set_charset($con, 'utf-8');
-
-    $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $userId ." AND created >= '". $dateBegin . "' AND created < '" . $dateEnd . "' ORDER BY created";
-
-    $iwsResult = mysqli_query($con, $dbQuery);
 
     $timesheets = array(
-        "timesheets" => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
+        "timesheets" => getAllTimesheets($con, $userId, $dateBegin, $dateEnd),
         "date" => $date
     );
-
-    mysqli_close($con);
-    mysqli_free_result($iwsResult);
     
     $_SESSION['begin'] = $dateBegin;
     $_SESSION['end'] = $dateEnd;
@@ -82,7 +70,6 @@ function getItems($userId) {
             }
         }
 
-//        $tickets = json_decode($ticketStr, true);
         $_SESSION['items'] = json_decode($ticketStr, true);
         
         curl_close($curl);

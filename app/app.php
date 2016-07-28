@@ -11,6 +11,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 include dirname(__FILE__).'/../src/services/buildView.php';
 include dirname(__FILE__).'/../src/services/buildCSV.php';
 include dirname(__FILE__).'/../src/services/setExpFlag.php';
+include dirname(__FILE__).'/../src/services/dbServices.php';
 
 $app = new Silex\Application();
 
@@ -32,20 +33,24 @@ $app->get('/home', function() use($app){
     
     session_start();
     
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    $con = connectToDb();
+    
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
     
 });
 
 $app->post('/week' , function() use($app){
 
     session_start();
+    
+    $con = connectToDb();
 
     switch ($_POST['source']){
         case 'view':
-            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week']));
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week'], $con));
             break;
         case 'admin':
-            $buildView = buildView($_SESSION['userId'], $_POST['week']);
+            $buildView = buildView($_SESSION['userId'], $_POST['week'], $con);
             buildCSV();
             return $app['twig']->render('admin.twig', $buildView);
             break;
@@ -59,7 +64,9 @@ $app->post('/setFlag', function() use($app){
     
     setFlag();
     
-    return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['userId'], $_SESSION['begin']));
+    $con = connectToDb();
+    
+    return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['userId'], $_SESSION['begin'], $con));
    
 
 });
@@ -114,7 +121,9 @@ $app->post('/', function() use($app){
                 
             }
             
-            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+            $con = connectToDb();
+            
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
         }
     }
 });
@@ -126,26 +135,11 @@ $app->post('/add', function() use($app){
     
     $_POST['userId'] = $_SESSION['userId'];
     
-    $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-            if(!$con){
-                exit('Connect Error (' . mysqli_connect_errno() . ')'
-                        . mysqli_connect_error() );
-            }
-    mysqli_set_charset($con, 'utf-8');
-
-    $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" . $_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
+    $con = connectToDb();
     
-    $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
-    
-    if(!mysqli_query($con, $dbQuery)){
+    addTimesheet($con);
         
-        echo 'check your form data';
-
-    }
-    
-    mysqli_close($con);  
-        
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date = null, $con));
 });
 
 $app->post('/delete', function() use($app){
@@ -153,96 +147,41 @@ $app->post('/delete', function() use($app){
     session_start();
     
     if(isset($_POST['id'])){
-        
-        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-
-        if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-        }
-
-        mysqli_set_charset($con, 'utf-8');
-
-        $dbQuery = "DELETE FROM timesheets WHERE id = ". $_POST['id'] . " AND userId = " . $_SESSION['userId'];
-
-        mysqli_query($con, $dbQuery);
-        
-        mysqli_close($con);
-
+        $con = connectToDb();
+        deleteTimesheet($con);
     }
-   
-
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
-
-   
+    
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
 });
 
 $app->post('/edit', function() use($app){
     
-   
-    if(isset($_POST['id'])){
-        
-        
-        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-        if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-        }
-        mysqli_set_charset($con, 'utf-8');
+    $con = connectToDb();
 
-        $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ." AND id = " . $_POST['id'];
+    $timesheet = getTimesheet($con);
 
-        $iwsResult = mysqli_query($con, $dbQuery);
-        
-        $timesheet = array(
-            'timesheet' => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
-        );
-       
-        mysqli_close($con);
-        mysqli_free_result($iwsResult);
-        
-        if($timesheet['timesheet'][0]['billable'] == 1){
-            $timesheet['timesheet'][0]['checked'] ='checked';
-        } else{
-            $timesheet['timesheet'][0]['checked'] = null;
-        }
-        
-        return $app['twig']->render('editTimesheet.twig', $timesheet);
-        
+    if($timesheet['timesheet'][0]['billable'] == 1){
+        $timesheet['timesheet'][0]['checked'] ='checked';
+    } else{
+        $timesheet['timesheet'][0]['checked'] = null;
     }
-    
-    else {
-        
-           return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
-    }
+
+    return $app['twig']->render('editTimesheet.twig', $timesheet);
 
 });
 
 $app->post('/update', function() use($app){
 
         
-        
-        if(!isset($_POST['billable'])){
-            $_POST['billable'] = 0;
-        }
-       
-        $con = mysqli_connect("localhost", "phpuser", "phpuserpw", "iws_cc");
-        
-        if(!$con){
-            exit('Connect Error (' . mysqli_connect_errno() . ')'
-                    . mysqli_connect_error() );
-        }
-        mysqli_set_charset($con, 'utf-8');
-        
-        $dbQuery = "UPDATE timesheets SET hours=" . $_POST['hours'] . ", comments = '" . $_POST['comments'] . "', billable = " . $_POST['billable'] . "  WHERE id = " . $_POST['id'] . " AND userId = " . $_SESSION['userId'];
-        
-        if(!mysqli_query($con, $dbQuery)){
-            echo 'something went wrong <br/>';
-        }
-        
-        mysqli_close($con);
+    if(!isset($_POST['billable'])){
+        $_POST['billable'] = 0;
+    }
 
-        return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId']));
+    $con = connectToDb();
+
+    updateTimesheet($con);
+
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
     
 });
 
