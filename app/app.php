@@ -16,42 +16,45 @@ include dirname(__FILE__).'/../src/services/extAPI.php';
 
 $app = new Silex\Application();
 
+$con = connectToDb();
+
 
         
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 
-$app->get('/', function() use($app){
+$app->get('/', function() use($app, $con){
     
-    session_unset();
-    
+    if($_SESSION['userId'] != undefined){
+        
+        mysqli_close($con);
+        session_unset();
+        
+    }
+
     return $app['twig']->render('login.twig');
 
 });
 
-$app->get('/home', function() use($app){
+$app->get('/home', function() use($app, $con){
     
     session_start();
     
-    $con = connectToDb();
-    
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
     
 });
 
-$app->post('/week' , function() use($app){
+$app->post('/week' , function() use($app, $con){
 
     session_start();
-    
-    $con = connectToDb();
 
     switch ($_POST['source']){
         case 'view':
-            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $_POST['week'], $con));
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_POST['week'], $con));
             break;
         case 'admin':
-            $buildView = buildView($_SESSION['userId'], $_POST['week'], $con);
+            $buildView = buildView($_POST['week'], $con);
             buildCSV();
             return $app['twig']->render('admin.twig', $buildView);
             break;
@@ -59,20 +62,18 @@ $app->post('/week' , function() use($app){
     
 });
 
-$app->post('/setFlag', function() use($app){
+$app->post('/setFlag', function() use($app, $con){
     
     session_start();
     
     setFlag();
     
-    $con = connectToDb();
-    
-    return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['userId'], $_SESSION['begin'], $con));
+    return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['begin'], $con));
    
 
 });
 
-$app->post('/', function() use($app){
+$app->post('/', function() use($app, $con){
     
     session_start();
     
@@ -97,10 +98,8 @@ $app->post('/', function() use($app){
             $tickets = getTickets();
             
             if($tickets['success']){
-                
-                $con = connectToDb();
             
-                return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
+                return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
             }
             
 
@@ -109,20 +108,16 @@ $app->post('/', function() use($app){
 });
 
 
-$app->post('/add', function() use($app){
+$app->post('/add', function() use($app, $con){
     
     session_start();
     
-    $_POST['userId'] = $_SESSION['userId'];
-    
-    $con = connectToDb();
-    
     addTimesheet($con);
         
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date = null, $con));
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date = null, $con));
 });
 
-$app->post('/delete', function() use($app){
+$app->post('/delete', function() use($app, $con){
     
     session_start();
     
@@ -131,12 +126,12 @@ $app->post('/delete', function() use($app){
         deleteTimesheet($con);
     }
     
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date = null, $con));
 });
 
-$app->post('/edit', function() use($app){
+$app->post('/edit', function() use($app, $con){
     
-    $con = connectToDb();
+    session_start();
 
     $timesheet = getTimesheet($con);
 
@@ -150,18 +145,18 @@ $app->post('/edit', function() use($app){
 
 });
 
-$app->post('/update', function() use($app){
+$app->post('/update', function() use($app, $con){
 
         
+    session_start();
+    
     if(!isset($_POST['billable'])){
         $_POST['billable'] = 0;
     }
 
-    $con = connectToDb();
-
     updateTimesheet($con);
 
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($_SESSION['userId'], $date=null, $con));
+    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
     
 });
 

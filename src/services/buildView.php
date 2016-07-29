@@ -3,19 +3,19 @@
 include dirname(__FILE__).'/../src/services/dbServices.php';
 
 
-function buildView ($userId, $date, $con) {
+function buildView ($date, $con) {
     
     $buildView = array(
         
         'tickets' => $_SESSION['items'],
-        'timesheets' => getTimesheets($userId, $date, $con)
+        'timesheets' => getTimesheets($date, $con)
         
     );
     
     return $buildView;
 }
 
-function getTimesheets($userId, $date, $con){
+function getTimesheets($date, $con){
 
     if(!$date){
         $stamp = getdate((time() - 259200) - time()% 604800);
@@ -31,7 +31,7 @@ function getTimesheets($userId, $date, $con){
     $date = ''. $stamp['mon'] . '-' . $stamp['mday'] .'-' . $stamp['year'] .'';
 
     $timesheets = array(
-        "timesheets" => getAllTimesheets($con, $userId, $dateBegin, $dateEnd),
+        "timesheets" => getAllTimesheets($con, $dateBegin, $dateEnd),
         "date" => $date
     );
     

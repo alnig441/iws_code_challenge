@@ -43,8 +43,7 @@ function getTimesheet ($con){
     $timesheet = array(
         'timesheet' => mysqli_fetch_all($iwsResult, MYSQLI_ASSOC),
     );
-
-    mysqli_close($con);
+    
     mysqli_free_result($iwsResult);
 
     return $timesheet;
@@ -53,7 +52,7 @@ function getTimesheet ($con){
 
 function addTimesheet ($con) {
   
- $values = "'". $_POST['created'] . "', " . $_POST['userId'] . ", " . $_POST['hours'] . ", '" . $_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
+ $values = "'". $_POST['created'] . "', " . $_SESSION['userId'] . ", " . $_POST['hours'] . ", '" . $_POST['ticket'] . "', '" . $_POST['comments'] . "', '" . $_POST['billable'] . "' ";
     
     $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
     
@@ -66,22 +65,17 @@ function addTimesheet ($con) {
     return;
 }
 
-function getAllTimesheets ($con, $userId, $dateBegin, $dateEnd) {
+function getAllTimesheets ($con, $dateBegin, $dateEnd) {
     
-    $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $userId ." AND created >= '". $dateBegin . "' AND created < '" . $dateEnd . "' ORDER BY created";
+    $dbQuery = "SELECT * FROM timesheets WHERE userId = " . $_SESSION['userId'] ." AND created >= '". $dateBegin . "' AND created < '" . $dateEnd . "' ORDER BY created";
     
     $iwsResult = mysqli_query($con, $dbQuery);
 
     $timesheets = mysqli_fetch_all($iwsResult, MYSQLI_ASSOC);
-    
-    mysqli_close($con);
+
     mysqli_free_result($iwsResult);
     
     return $timesheets;
 }
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
