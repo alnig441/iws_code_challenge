@@ -1,31 +1,74 @@
-      html {font-family: "Courier New", sans-serif, monospace;}
-      
-    body {width: 75%;}
-    
-    html, body, div, table, form {margin: auto;}
-    
-    td{font-size: 14px; border: none;}
-    
-    table{width: 100%;}
-    
-    #ts_table, table, div {border: 1px; text-align: center; white-space: nowrap;}
-    
-    thead, th {font-weight: normal; border: 1px solid;}
-    
-    .table_text {white-space: nowrap;  text-align: left;}
-    
-    .comments input{width:99%;}
-    
-    .comments {width: 50%;}
-    
-    #logout {position:absolute; right: 10%;}
-    
-    #admin, #home {position:absolute; right: 15%;}
-   
-    #datepicker{position: absolute; left: 10%}
-    
-    td form{display:inline;}
-    
-    a {text-decoration: none; transform: none; color: black;}
-    
-    #footer{position: relative; top: 10px;}
+html {
+    font-family: "Courier New", sans-serif, monospace;
+}
+body {
+    width: 75%;
+}
+html,
+body,
+div,
+table,
+form,
+footer,
+mark {
+    margin: auto;
+}
+mark,
+p,
+footer {
+    text-align: center;
+}
+td {
+    font-size: 14px;
+    border: none;
+}
+table {
+    width: 100%;
+}
+#ts_table,
+table,
+div {
+    border: 1px;
+    text-align: center;
+    white-space: nowrap;
+}
+thead,
+th {
+    font-weight: normal;
+    border: 1px solid;
+}
+.table_text {
+    white-space: nowrap;
+    text-align: left;
+}
+.comments input {
+    width: 99%;
+}
+.comments {
+    width: 50%;
+}
+#logout {
+    position: absolute;
+    right: 13%;
+}
+#admin,
+#home {
+    position: absolute;
+    right: 17%;
+}
+#calendar {
+    position: absolute;
+    left: 13%
+}
+td form {
+    display: inline;
+}
+a {
+    text-decoration: none;
+    transform: none;
+    color: black;
+}
+footer {
+    position: relative;
+    top: 10px;
+}

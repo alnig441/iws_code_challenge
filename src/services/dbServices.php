@@ -26,12 +26,8 @@ function deleteTimesheet ($con){
 function updateTimesheet ($con) {
     
     $dbQuery = "UPDATE timesheets SET hours=" . $_POST['hours'] . ", comments = '" . $_POST['comments'] . "', billable = " . $_POST['billable'] . "  WHERE id = " . $_POST['id'] . " AND userId = " . $_SESSION['userId'];
-        
-    if(!mysqli_query($con, $dbQuery)){
-        echo 'something went wrong <br/>';
-    }
     
-    return;
+    return mysqli_query($con, $dbQuery);
 }
 
 function getTimesheet ($con){
@@ -56,13 +52,7 @@ function addTimesheet ($con) {
     
     $dbQuery = "INSERT INTO timesheets (created, userId, hours, ticket, comments, billable) VALUES (" . $values . ")";
     
-    if(!mysqli_query($con, $dbQuery)){
-        
-        echo 'check your form data';
-
-    }
-    
-    return;
+    return mysqli_query($con, $dbQuery);
 }
 
 function getAllTimesheets ($con, $dateBegin, $dateEnd) {

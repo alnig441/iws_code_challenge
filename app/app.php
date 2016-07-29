@@ -17,11 +17,20 @@ include dirname(__FILE__).'/../src/services/extAPI.php';
 $app = new Silex\Application();
 
 $con = connectToDb();
-
-
-        
+     
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
+));
+
+$app->register(new Silex\Provider\SessionServiceProvider);
+
+$app->register(new Silex\Provider\AssetServiceProvider(), array(
+    'assets.named_pacakages' => array(
+        'css' => array(
+            'version' => 'css3', 
+            'base_path' => '../src/css/'
+            )
+    )
 ));
 
 $app->get('/', function() use($app, $con){
@@ -69,15 +78,15 @@ $app->post('/setFlag', function() use($app, $con){
     setFlag();
     
     return $app['twig']->render('adminPartial.twig', $buildView = buildView($_SESSION['begin'], $con));
-   
-
 });
 
 $app->post('/', function() use($app, $con){
     
     session_start();
     
-    if(empty($_POST['username']) && !empty($_POST['password'])){
+    if($_POST['username'] == "" ||  $_POST['password'] == ""){
+        
+        $app['session']->getFlashBag()->add('auth_err', 'please supply username/password');
         
         return $app['twig']->render('login.twig');
         
@@ -89,7 +98,9 @@ $app->post('/', function() use($app, $con){
         
         if(!$user["success"]){
             
-            return $app['twig']->render('login.twig').'wrong user/pw combo';
+            $app['session']->getFlashBag()->add('auth_err', $user['error']);
+            
+            return $app['twig']->render('login.twig');
         
         }
         
@@ -97,11 +108,13 @@ $app->post('/', function() use($app, $con){
             
             $tickets = getTickets();
             
-            if($tickets['success']){
-            
-                return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
+            if($tickets == null){
+                
+                $app['session']->getFlashBag()->add('add_view_err', 'No tickets retrieved! '.$tickets['error']);
+                
             }
-            
+
+            return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
 
         }
     }
@@ -112,8 +125,24 @@ $app->post('/add', function() use($app, $con){
     
     session_start();
     
-    addTimesheet($con);
+    if ($_POST['created'] == "" || $_POST['hours'] == "" || $_POST['comments'] == ""){
         
+        $app['session']->getFlashBag()->add('add_view_err', 'Empty text field submitted!');
+        
+    }
+        
+    else{
+        
+        $resp = addTimesheet($con);
+        
+        if(!$resp){
+            
+            $app['session']->getFlashBag()->add('add_view_err', 'Record insertion unsuccesful!');
+            
+        }
+        
+    }
+    
     return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date = null, $con));
 });
 
@@ -122,7 +151,6 @@ $app->post('/delete', function() use($app, $con){
     session_start();
     
     if(isset($_POST['id'])){
-        $con = connectToDb();
         deleteTimesheet($con);
     }
     
@@ -146,17 +174,28 @@ $app->post('/edit', function() use($app, $con){
 });
 
 $app->post('/update', function() use($app, $con){
-
-        
+    
     session_start();
     
     if(!isset($_POST['billable'])){
         $_POST['billable'] = 0;
     }
 
-    updateTimesheet($con);
+    $resp = updateTimesheet($con);
+    
+    if(!$resp){
+        
+        $app['session']->getFlashBag()->add('update_view_err', 'Record update unsuccesful!');
+        
+    }
+    
+    else{
+        
+        return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
+        
+    }
 
-    return $app['twig']->render('viewTimesheets.twig', $buildView = buildView($date=null, $con));
+    
     
 });
 

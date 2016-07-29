@@ -5,32 +5,35 @@
 
 {% block calendar %}
     {% endblock %}
-{#{% block header %}
-    {% block specific_buttons %}
-        <form id='logout' action="index.php" name='logout'>
-            <input  type="submit" value="Logout" name="logout" />
-        </form>
-{% endblock %}#}
 
 {% block mark %}
     <h1> Edit Entry </h1>
 {% endblock %}
 
 {% block ts_body %}
-            <tbody>
-                {% if timesheet %}
-                    {% for timesheet in timesheet %}
-                    <form name="editTicket" method="POST" action='update'>
-                        <tr>
-                            <td><input type="hidden" name="id" value="{{timesheet.id}}">{{timesheet.created}}</td>
-                            <td><input type="text" name="hours" value="{{timesheet.hours}}"></td>
-                            <td class='table_text ticket'>{{timesheet.ticket}}</td>
-                            <td class='table_text comments'><input type='text' name="comments" value="{{timesheet.comments}}"></td>
-                            <td><input type='checkbox' name='billable' value=1 {%if timesheet.billable %}checked{% endif %}></td>
-                            <td><input type="submit" value="save" name="saveEdit"></td>
-                        </tr>
-                    </form>
-                    {% endfor %}
-                {% endif %}
-            </tbody>
+    <tbody>
+        {% if timesheet %}
+            {% for timesheet in timesheet %}
+            <form name="editTicket" method="POST" action='update'>
+                <tr>
+                    <td><input type="hidden" name="id" value="{{timesheet.id}}">{{timesheet.created}}</td>
+                    <td><input type="text" name="hours" value="{{timesheet.hours}}"></td>
+                    <td class='table_text ticket'>{{timesheet.ticket}}</td>
+                    <td class='table_text comments'><input type='text' name="comments" value="{{timesheet.comments}}"></td>
+                    <td><input type='checkbox' name='billable' value=1 {%if timesheet.billable %}checked{% endif %}></td>
+                    <td><input type="submit" value="save" name="saveEdit"></td>
+                </tr>
+            </form>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+            
+    <div>
+    {% for alert in app.session.flashbag.get('update_view_err') %}
+        <div class="error-message">
+          <div class="alert"><strong>{{ alert }}</strong></div>
+        </div>
+    {% endfor %}
+    </div>
+        
 {% endblock %}

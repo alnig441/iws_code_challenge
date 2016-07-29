@@ -37,7 +37,7 @@ function getUser () {
 function getTickets () {
     
     $curl = curl_init();
-
+    
     $getTicketsOptions = array(
 
         CURLOPT_URL => BASE_URL.GET_ITEMS.$_SESSION['userId'],

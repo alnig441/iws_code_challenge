@@ -15,6 +15,7 @@
             <tbody>
                 {% if timesheets %}
                     {% for timesheet in timesheets.timesheets %}
+                        {% if timesheet is not empty  %}
                         <tr>
                             <td>{{timesheet.created}}</td>
                             <td>{{timesheet.hours}}</td>
@@ -31,6 +32,7 @@
                                     <input type="submit" value="Delete" action="delete"/></td>
                                 </form>
                         </tr>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </tbody>
@@ -39,6 +41,14 @@
 {% block section %}
     
     {% include "addTimesheet.twig" %}
+    
+        <div>
+        {% for alert in app.session.flashbag.get('add_view_err') %}
+            <div class="error-message">
+              <div class="alert"><strong>{{ alert }}</strong></div>
+            </div>
+        {% endfor %}
+        </div>
 
 {% endblock %}
 

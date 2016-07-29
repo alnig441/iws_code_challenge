@@ -1,6 +1,14 @@
 <center>
     <h1> RS/Timesheet </h1>
-
+    
+    <div>
+    {% for alert in app.session.flashbag.get('auth_err') %}
+        <div class="error-message">
+          <div class="alert"><strong>{{ alert }}</strong></div>
+        </div>
+    {% endfor %}
+    </div>
+    
     <form action="" method='POST' >
 
         <br>User: <input type="text" name="username" value="" /><br/>
@@ -8,5 +16,8 @@
         <br><input type="submit" value="Login"/><br/>
         
     </form>
+    
+    
+
     
 </center>
